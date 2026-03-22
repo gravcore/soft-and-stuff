@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Mobile
+android
+ios
+
+# Desktop
+src-tauri/target/

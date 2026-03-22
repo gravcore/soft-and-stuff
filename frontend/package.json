@@ -7,12 +7,18 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "mobile:android": "pnpm build && pnpm exec cap sync && pnpm exec cap open android",
+    "mobile:ios": "pnpm build && pnpm exec cap sync && pnpm exec cap open ios",
+    "desktop:dev": "pnpm exec tauri dev",
+    "desktop:build": "pnpm exec tauri build"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",
     "@capacitor/core": "^8.2.0",
     "@capacitor/ios": "^8.2.0",
+    "@tauri-apps/api": "^2.10.1",
+    "@tauri-apps/cli": "^2.10.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
