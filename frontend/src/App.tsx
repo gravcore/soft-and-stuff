@@ -2,13 +2,21 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
+import { DesktopTitleBar } from './shared/components/DesktopTitleBar/DesktopTitleBar';
+import { usePlatform } from './shared/hooks/usePlatform';
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const platform = usePlatform();
 
   return (
     <>
+      {(platform === 'windows' || platform === 'macos' || platform === 'linux') && (
+        <DesktopTitleBar />
+      )}
+      {/* only render on desktop */}
+
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
@@ -16,7 +24,7 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+          <h1>Get started {platform}</h1>
           <p>
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
