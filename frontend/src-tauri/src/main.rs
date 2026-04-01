@@ -2,5 +2,10 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-  app_lib::run();
+  tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
+        // registers the OS plugin so platform() is callable from TypeScript
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application")
+  // app_lib::run();
 }

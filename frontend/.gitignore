@@ -24,8 +24,9 @@ dist-ssr
 *.sw?
 
 # Mobile
-android
-ios
+android/build/
+android/.gradle/
+ios/Pods/
 
 # Desktop
 src-tauri/target/

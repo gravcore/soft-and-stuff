@@ -10,15 +10,22 @@
     "preview": "vite preview",
     "mobile:android": "pnpm build && pnpm exec cap sync && pnpm exec cap open android",
     "mobile:ios": "pnpm build && pnpm exec cap sync && pnpm exec cap open ios",
+    "mobile:dev": "pnpm dev --host",
+    "mobile:dev-android": "pnpm exec cap run android -l",
+    "mobile:dev-ios": "pnpm exec cap run ios -l",
     "desktop:dev": "pnpm exec tauri dev",
-    "desktop:build": "pnpm exec tauri build"
+    "desktop:dev-mac": "pnpm exec tauri dev --config tauri.macos.conf.json",
+    "desktop:build": "pnpm exec tauri build",
+    "desktop:build-mac": "pnpm exec tauri build --config tauri.macos.conf.json"
   },
   "dependencies": {
     "@capacitor/android": "^8.2.0",
     "@capacitor/core": "^8.2.0",
     "@capacitor/ios": "^8.2.0",
+    "@capacitor/status-bar": "^8.0.1",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/cli": "^2.10.1",
+    "@tauri-apps/plugin-os": "^2.3.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
