@@ -4,7 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev":            "tsx watch src/server.ts",
+    "build":          "tsc --project tsconfig.json",
+    "start":          "node dist/server.js",
+    "migrate":        "tsx migrations/run.ts",
+    "test":           "jest --runInBand",
+    "test:watch":     "jest --watch",
+    "test:coverage":  "jest --coverage",
+    "lint":           "eslint src --ext .ts",
+    "format":         "prettier --write src/**/*.ts",
+    "type-check":     "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
