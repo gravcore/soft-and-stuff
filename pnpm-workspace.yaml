@@ -3,3 +3,4 @@ packages:
   - 'backend'
 allowBuilds:
   esbuild: false
+  unrs-resolver: false
