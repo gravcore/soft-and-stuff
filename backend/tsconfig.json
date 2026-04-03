@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",           // Compile to modern JavaScript (2022 features)
+    "module": "commonjs",         // Use require() style imports (standard for Node.js)
+    "lib": ["ES2022"],            // Include built-in types for ES2022 features
+    "rootDir": "./src",           // Source files live here
+    "outDir": "./dist",           // Compiled JS files go here
+    "strict": true,               // Enable all strict type checks (catches more bugs)
+    "esModuleInterop": true,      // Allows cleaner imports from CommonJS packages
+    "skipLibCheck": true,         // Skip type-checking of node_modules (faster builds)
+    "moduleResolution": "node",   // Resolve imports the way Node.js does
+    "resolveJsonModule": true,    // Allows importing .json files directly
+    "sourceMap": true,            // Generate maps so debugger shows original TS, not compiled JS
+    "noUnusedLocals": true,       // Error if a local variable is declared but never used
+    "noUnusedParameters": true,   // Error if a function parameter is declared but never used
+    "noImplicitReturns": true,    // Error if a function doesn't return in all code paths
+    "baseUrl": ".",               // Base for resolving non-relative imports
+    "paths": { "@/*": ["src/*"] } // Lets us write @/utils instead of ../../utils
+  },
+  "include": ["src/**/*"],        // Only compile files inside /src
+  "exclude": ["node_modules", "dist", "tests"] // Ignore these folders
+}
