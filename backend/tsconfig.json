@@ -8,7 +8,7 @@
     "strict": true,               // Enable all strict type checks (catches more bugs)
     "esModuleInterop": true,      // Allows cleaner imports from CommonJS packages
     "skipLibCheck": true,         // Skip type-checking of node_modules (faster builds)
-    "moduleResolution": "node",   // Resolve imports the way Node.js does
+    "moduleResolution": "node16",   // Resolve imports the way Node.js does
     "resolveJsonModule": true,    // Allows importing .json files directly
     "sourceMap": true,            // Generate maps so debugger shows original TS, not compiled JS
     "noUnusedLocals": true,       // Error if a local variable is declared but never used
