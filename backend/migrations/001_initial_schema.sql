@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS products (
     price_in_cents          INTEGER NOT NULL CHECK(price_in_cents >= 0), -- integer price in cents to avoid decimal or floats rounds
     compare_price           INTEGER CHECK(compare_price >= 0),
     images_url              JSONB DEFAULT '[]',
-    videos_id               JSONB DEFAULT '[]',
+    videos_url               JSONB DEFAULT '[]',
     metadata                JSONB DEFAULT '{}',
     created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -103,6 +103,22 @@ CREATE TABLE IF NOT EXISTS order_items (
     total           INTEGER NOT NULL,
     created_at      TIMESTAMPTZ DEFAULT NOW(),
     updated_at      TIMESTAMPTZ DEFAULT NOW()   
+);
+
+CREATE TABLE IF NOT EXISTS user_addresses (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    address_name    VARCHAR(255) NOT NULL,
+    line1           VARCHAR(255) NOT NULL,
+    line2           VARCHAR(255),
+    address_state   VARCHAR(100),
+    city            VARCHAR(100) NOT NULL,
+    country         CHAR(2) NOT NULL DEFAULT 'US',
+    zip             VARCHAR(20),
+    address_notes   TEXT,
+    is_default      BOOLEAN NOT NULL DEFAULT false,
+    created_at      TIMESTAMPTZ DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ DEFAULT NOW()                       
 );
 
 -- Index for performance
