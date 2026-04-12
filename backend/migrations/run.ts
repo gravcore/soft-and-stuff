@@ -25,7 +25,7 @@ async function run() {
 
         // Check if the migration file was already applied
         const { rows } = await db.query(
-            'SELECT id FORM _migrations WHERE filename = $1',
+            'SELECT id FROM _migrations WHERE filename = $1',
             [file]
         );
 
