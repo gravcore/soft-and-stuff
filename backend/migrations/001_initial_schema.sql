@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash   VARCHAR(100),
     first_name      VARCHAR(255),
     last_name       VARCHAR(255),
-    roles           VARCHAR(20) DEFAULT 'customer', -- can be "customer" | "admin"
+    user_role       VARCHAR(20) DEFAULT 'customer', -- can be "customer" | "admin"
     avatar_url      VARCHAR(500),
     is_verified     BOOLEAN NOT NULL DEFAULT false,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
