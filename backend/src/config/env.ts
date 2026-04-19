@@ -23,7 +23,7 @@ const schema = z.object({
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
 
-    IMAGEKIT_PUBLCI_KEY: z.string(),
+    IMAGEKIT_PUBLIC_KEY: z.string(),
     IMAGEKIT_PRIVATE_KEY: z.string(),
     IMAGEKIT_URL_ENDPOINT: z.url(),
 
