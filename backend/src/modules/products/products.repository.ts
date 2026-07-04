@@ -22,7 +22,7 @@ interface ProductRow {
 }
 
 interface CreateProductParams {
-    name:           string;
+    productName:    string;
     slug:           string;
     categoryId?:    string;
     description?:   string;
@@ -31,8 +31,8 @@ interface CreateProductParams {
     sku?:           string;
     stock:          number;
     isFeatured:     boolean;
-    images:         string[];
-    videos:         string[];
+    imagesUrl:         string[];
+    videosUrl:         string[];
     metadata:       Record<string, unknown>;
 }
 
@@ -140,7 +140,7 @@ export const productsRepository = {
             RETURNING *`,
             [
                 input.categoryId ?? null,
-                input.name,
+                input.productName,
                 input.slug,
                 input.description ?? null,
                 input.priceInCents,
@@ -148,8 +148,8 @@ export const productsRepository = {
                 input.sku ?? null,
                 input.stock,
                 input.isFeatured,
-                JSON.stringify(input.images),
-                JSON.stringify(input.videos),
+                JSON.stringify(input.imagesUrl),
+                JSON.stringify(input.videosUrl),
                 JSON.stringify(input.metadata),
             ]
         );
@@ -177,7 +177,7 @@ export const productsRepository = {
             [
                 id,
                 input.categoryId ?? null,
-                input.name ?? null,
+                input.productName ?? null,
                 input.slug ?? null,
                 input.description ?? null,
                 input.priceInCents ?? null,
@@ -185,8 +185,8 @@ export const productsRepository = {
                 input.sku ?? null,
                 input.stock ?? null,
                 input.isFeatured ?? null,
-                input.images ? JSON.stringify(input.images) : null,
-                input.videos ? JSON.stringify(input.videos) : null,
+                input.imagesUrl ? JSON.stringify(input.imagesUrl) : null,
+                input.videosUrl ? JSON.stringify(input.videosUrl) : null,
                 input.metadata ? JSON.stringify(input.metadata) : null,
             ]       
         );

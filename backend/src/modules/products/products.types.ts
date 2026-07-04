@@ -23,5 +23,5 @@ export interface ProductFilters {
     search?: string,
     minPrice?: number,
     maxPrice?: number,
-    sort: ('price_asc' | 'price_desc' | 'newest' | 'popular')[],
+    sort?: ('price_asc' | 'price_desc' | 'newest' | 'popular')[],
 }

@@ -38,10 +38,10 @@ export const createProductSchema = z.object({
         z.number(schemaError('PRODUCT_COMPARE_PRICE_REQUIRE_NUMBER', 'Product compare price require a number')).int() 
         .min(0, schemaError('INVALID_PRICE', 'Price must be 0 or greater'))
         .optional(),
-    images:
+    imagesUrl:
         z.array(z.url(schemaError('PRODUCT_IMAGE_INVALID_URL', 'Each image must be a valid url')))
         .default([]),
-    videos: 
+    videosUrl:
         z.array(z.url(schemaError('PRODUCT_VIDEO_INVALID_URL', 'Each video must be a valid url')))
         .default([]),
     metadata:

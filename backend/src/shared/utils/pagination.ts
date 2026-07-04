@@ -5,6 +5,7 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 
 // Extracts and sanitizes the pagination data comming from the request query string
+// GET /products?page=2&limit=10 -> { page: 2, limit: 10, offset: 10 }
 export const parsePagination = (req: Request): PaginationParams => {
 
     // Ensures the result is never less than 1
