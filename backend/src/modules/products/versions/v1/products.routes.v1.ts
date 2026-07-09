@@ -11,7 +11,7 @@ router.get('/categories', productsControllerV1.getCategories);
 router.get('/:slug', productsControllerV1.getBySlug);
 
 // Admin-only routes
-const adminGuard = [authenticate, authorize('admin')];
+const adminGuard = [authenticate(), authorize('admin')];
 
 router.post('/',        ...adminGuard, validateSchema(createProductSchema), productsControllerV1.create);
 router.patch('/:id',    ...adminGuard, validateSchema(updateProductSchema), productsControllerV1.update);

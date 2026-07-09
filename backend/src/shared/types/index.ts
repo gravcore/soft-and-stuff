@@ -10,6 +10,7 @@ export interface JwtPayload {
 // Extends Express Request with the decoded JWT payload
 export interface AuthRequest extends Request {
     user?: JwtPayload;
+    guestSessionId?: string;
 }
 
 export interface PaginationParams { page: number; limit: number; offset: number; }

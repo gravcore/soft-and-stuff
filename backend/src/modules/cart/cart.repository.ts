@@ -55,9 +55,9 @@ export const cartRepository = {
     },
 
     // Single cart_item lookup, used to check ownership before update/delete
-    async findItem(itemId: string): Promise<{ id: string, cart_id: string } | null> {
-        const { rows } = await db.query<{ id: string, cart_id: string }>(
-            `SELECT id, cart_id FROM cart_items WHERE id = $1 LIMIT 1`,
+    async findItem(itemId: string): Promise<{ id: string; cart_id: string; product_id: string } | null> {
+        const { rows } = await db.query<{ id: string; cart_id: string; product_id: string }>(
+            `SELECT id, cart_id, product_id FROM cart_items WHERE id = $1 LIMIT 1`,
             [itemId],
         );
         return rows[0] ?? null;

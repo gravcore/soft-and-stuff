@@ -4,17 +4,24 @@ import { env } from '@/config/env';
 import { AuthRequest, JwtPayload } from '@/shared/types';
 import { AppError } from '@/shared/errors/AppError';
 
-// Verifies the JWT access token in the Authorization header
-export const authenticate = (req: AuthRequest, _res: Response, next: NextFunction): void => {
+/**
+ * Verifies the JWT access token in the Authorization header.
+ * @param required - `true` (default): rejects the request if no/invalid token.
+ *                   `false`: tries to identify the user, never blocks (guest-friendly).
+ */
+export const authenticate = (required = true) => (req: AuthRequest, _res: Response, next: NextFunction): void => {
     const header = req.headers.authorization;
-    if (!header?.startsWith('Bearer '))
-        return next(new AppError('No access token provided', 401, 'UNAUTHORIZED'));
+    if (!header?.startsWith('Bearer ')) {
+        if (required) return next(new AppError('No access token provided', 401, 'UNAUTHORIZED'));
+        return next(); // just continue as guest (for guest cart logic)
+    }
 
     try {
         req.user = jwt.verify(header.slice(7), env.JWT_ACCESS_SECRET) as JwtPayload;
         next();
     } catch {
-        next(new AppError('Invalid or expired access token', 401, 'UNAUTHORIZED'));
+        if (required) return next(new AppError('Invalid or expired access token', 401, 'UNAUTHORIZED'));
+        next(); // just continue as guest
     }
 };
 
