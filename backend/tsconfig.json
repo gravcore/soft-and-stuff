@@ -15,6 +15,7 @@
     "noUnusedParameters": true,   // Error if a function parameter is declared but never used
     "noImplicitReturns": true,    // Error if a function doesn't return in all code paths
     // "baseUrl": ".",            // Base for resolving non-relative imports
+    "jsx": "react-jsx",
     "paths": { "@/*": ["./src/*"] } // Lets us write @/utils instead of ../../utils
   },
   "include": ["src/**/*"],        // Only compile files inside /src

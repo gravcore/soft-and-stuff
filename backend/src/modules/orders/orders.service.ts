@@ -1,24 +1,12 @@
 import { AppError } from '@/shared/errors/AppError';
 import { withTransaction } from '@/config/database';
 import { generateTrackingId } from '@/shared/utils/crypto';
-import { sendEmail } from '@/shared/adapters/mailer';
 import { parsePagination, buildMeta } from '@/shared/utils/pagination';
 import { cartRepository } from '../cart/cart.repository';
 import { ordersRepository } from './orders.repository';
 import { CheckoutInput } from './orders.schema';
 import { Request } from 'express';
-
-// Plain HTML string for the confirmation email
-const buildOrderConfirmationEmail = (
-    orderNumber: string,
-    trackingId: string,
-    total: number
-): string => `
-    <h1>Order Confirmed</h1>
-    <p>Your order <strong>${orderNumber}</strong> has been received.</p>
-    <p>Total: $${(total / 100).toFixed(2)}</p>
-    <p>Track your order anytime using this ID: <strong>${trackingId}</strong></p>
-`;
+import { emailService } from '../email/email.service';
 
 export const ordersService = {
 
@@ -84,10 +72,16 @@ export const ordersService = {
             await cartRepository.clearItems(cartId);
 
             // 8. Send confirmation email
-            sendEmail({
+            emailService.sendOrderConfirmationEmail({
                 to: input.shippingAddress.email,
-                subject: `Order confirmed - ${orderNumber}`,
-                html: buildOrderConfirmationEmail(orderNumber, trackingId, total),
+                orderNumber,
+                trackingId,
+                total,
+                items: cartItems.map((i) => ({
+                    name: i.product_name,
+                    quantity: i.quantity,
+                    totalPrice: i.price_snapshot * i.quantity,
+                })),
             }).catch(console.error);
 
             return { orderId: order.id, orderNumber, trackingId, total };

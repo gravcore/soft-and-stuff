@@ -2,9 +2,9 @@ import { AppError } from "@/shared/errors/AppError";
 import { authRepository } from "./auth.repository";
 import { LoginInput, RegisterInput, TokenPair } from "./auth.types";
 import { generateToken, hashPassword, hashToken, verifyPassword } from "@/shared/utils/crypto";
-import { sendEmail } from "@/shared/adapters/mailer";
 import jwt from 'jsonwebtoken';
 import { env } from '@/config/env';
+import { emailService } from "../email/email.service";
 
 export const authService = {
 
@@ -25,10 +25,9 @@ export const authService = {
         });
 
         // Send a welcome email
-        sendEmail({
-            to: user.email,
-            subject: 'Welcome to the store',
-            html: `<p>Hi ${user.first_name} thanks for joining!</p>`
+        emailService.sendWelcomeEmail({
+            to: input.email,
+            firstName: input.firstName,
         }).catch(console.error);
 
         return user;
