@@ -3,7 +3,7 @@
     "target": "ES2022",           // Compile to modern JavaScript (2022 features)
     "module": "Node16",         // Use require() style imports (standard for Node.js)
     "lib": ["ES2022"],            // Include built-in types for ES2022 features
-    "rootDir": "./src",           // Source files live here
+    "rootDir": ".",           // Source files live here
     "outDir": "./dist",           // Compiled JS files go here
     "strict": true,               // Enable all strict type checks (catches more bugs)
     "esModuleInterop": true,      // Allows cleaner imports from CommonJS packages
@@ -18,6 +18,6 @@
     "jsx": "react-jsx",
     "paths": { "@/*": ["./src/*"] } // Lets us write @/utils instead of ../../utils
   },
-  "include": ["src/**/*"],        // Only compile files inside /src
-  "exclude": ["node_modules", "dist", "tests"] // Ignore these folders
+  "include": ["src/**/*", "tests/**/*"],        // Only compile files inside /src
+  "exclude": ["node_modules", "dist"] // Ignore these folders
 }

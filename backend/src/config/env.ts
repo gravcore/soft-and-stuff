@@ -6,7 +6,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 const schema = z.object({
 
     // Only these exact values are allowed
-    NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    NODE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),
     PORT: z.coerce.number().default(3000), // string -> number
 
     DATABASE_URL: z.url(),

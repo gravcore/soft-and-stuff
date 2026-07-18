@@ -9,7 +9,7 @@ export const validateSchema =
     (req: Request, _res: Response, next: NextFunction) => {
 
         // Check data with the schema, converts in an object, and if something fail not throw an error
-        const parsed = schema.safeParse(req[target]);
+        const parsed = schema.safeParse(req[target] ?? {});
 
         if (!parsed.success) {
 

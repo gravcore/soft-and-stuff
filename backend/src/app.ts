@@ -14,6 +14,8 @@ import ordersRoutesV1 from './modules/orders/versions/v1/orders.routes.v1';
 import paymentsRoutesV1 from './modules/payments/versions/v1/payments.routes.v1';
 import mediaRoutesV1 from './modules/media/versions/v1/media.routes.v1';
 import cartRoutesV1 from './modules/cart/versions/v1/cart.routes.v1';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from '@/config/swagger';
 
 export const createApp = () => {
     // Initialize Sentry to capture startup errors too
@@ -58,6 +60,11 @@ export const createApp = () => {
     app.use(`${V1}/payments`,   paymentsRoutesV1);
     app.use(`${V1}/media`,      mediaRoutesV1);
     app.use(`${V1}/cart`,       cartRoutesV1);
+
+    // Only for no production
+    if (env.NODE_ENV !== 'production') {
+        app.use(`${V1}/docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    }
 
     app.use((_req, res) => res.status(404).json({ success: false, error: { code: 'NOT_FOUND', message: 'Route not found' }}));
     app.use(errorHandler);

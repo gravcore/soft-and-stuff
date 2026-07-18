@@ -112,8 +112,8 @@ export const authRepository = {
     ): Promise<RefreshTokenRow> {
         const { rows } = await db.query<RefreshTokenRow>(
             `
-                SELECT rt.id AS id, rt.userId AS userId, u.user_role AS role
-                FROM refresh_token rt
+                SELECT rt.id AS id, rt.user_id AS "userId", u.user_role AS role
+                FROM refresh_tokens rt
                 JOIN users u ON u.id = rt.user_id
                 WHERE rt.token_hash = $1
                   AND rt.expires_at > NOW() 

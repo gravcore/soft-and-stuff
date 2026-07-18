@@ -13,6 +13,7 @@ export const apiLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
+    skip: () => env.NODE_ENV === 'test',
 });
 
 export const authLimiter = rateLimit({
@@ -21,4 +22,5 @@ export const authLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     handler: rateLimitHandler,
+    skip: () => process.env.NODE_ENV === 'test',
 });
