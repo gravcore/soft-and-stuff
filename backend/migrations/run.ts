@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
-import { db } from '../src/config/database';
+import { db, withTransaction } from '../src/config/database';
 
 const MIGRATIONS_DIR = join(__dirname);
 
@@ -31,7 +31,7 @@ async function run() {
 
         if (rows.length > 0) {
             console.log(`   Skip: ${file}`);
-            continue;
+            continue; // skips the rest of the current loop iteration and jumps straight to the next one
         }
 
         // Extract file content
@@ -39,23 +39,19 @@ async function run() {
 
         // Execute the sql in a transaction
         try {
-            await db.query('BEGIN');
-            await db.query(sql);
-            await db.query(
-                'INSERT INTO _migrations (filename) VALUES ($1)',
-                [file]
-            );
-            await db.query('COMMIT');
+            await withTransaction(async (client) => {
+                await client.query(sql);
+                await client.query('INSERT INTO _migrations (filename) VALUES ($1)', [file]);
+            });
             console.log(`Migration applied: ${file}`);
         } catch (err) {
-            await db.query('ROLLBACK');
             console.log(`X - Fail in migration: ${file}`, err);
             process.exit(1);
         }
     }
 
     await db.end();
-    console.log('Migrations applied successfully')
+    console.log('Migrations applied successfully');
 }
 
 run().catch((err) => {
