@@ -23,15 +23,22 @@
     "@capacitor/core": "^8.2.0",
     "@capacitor/ios": "^8.2.0",
     "@capacitor/status-bar": "^8.0.1",
+    "@imagekit/react": "^5.0.2",
+    "@tanstack/react-query": "^5.101.3",
     "@tauri-apps/api": "^2.10.1",
     "@tauri-apps/cli": "^2.10.1",
     "@tauri-apps/plugin-os": "^2.3.2",
+    "axios": "^1.18.1",
+    "motion": "^12.42.2",
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.18.1",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.2.0",
     "@eslint/js": "^9.39.4",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@types/node": "^24.12.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -40,6 +47,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "sass": "^1.101.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
     "vite": "^8.0.1"
