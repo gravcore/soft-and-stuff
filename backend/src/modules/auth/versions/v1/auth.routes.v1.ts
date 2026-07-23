@@ -7,13 +7,29 @@ import { authenticate } from "@/shared/middleware/auth.middleware";
 
 const router = Router();
 
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Create a new account
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema: { type: object, required: [email, password, firstName], properties: { email: {type: string}, password: {type: string}, firstName: {type: string}, lastName: {type: string} }}
+ *     responses:
+ *       201: { description: User created }
+ *       409: { description: Email already registered }
+ *       422: { description: Validation error }
+ */
 router.post('/register', authLimiter, validateSchema(registerSchema), authControllerV1.register);
 
 /**
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Log in a user
+ *     summary: Log in a user with email and password
  *     tags: [Auth]
  *     requestBody:
  *       required: true
