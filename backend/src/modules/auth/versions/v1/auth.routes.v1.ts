@@ -48,6 +48,26 @@ router.post('/register', authLimiter, validateSchema(registerSchema), authContro
 router.post('/login', authLimiter, validateSchema(loginSchema), authControllerV1.login);
 router.post('/refresh', authLimiter, validateSchema(refreshSchema), authControllerV1.refresh);
 router.post('/logout', authenticate(), authControllerV1.logout);
+
+/**
+ * @swagger
+ * /auth/me:
+ *   get:
+ *     summary: Get user's profile
+ *     tags: [Auth]
+ *     security: [{ bearerAuth: []}]
+ *     responses:
+ *       200:
+ *         description: Get current info
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success: { type: boolean, example: true }
+ *                 data: { type: array, items: { type: object }}
+ *       401: { description: Missing or invalid token }
+ */
 router.get('/me', authenticate(), authControllerV1.me);
 
 export default router;
