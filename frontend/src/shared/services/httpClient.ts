@@ -3,7 +3,7 @@ import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axio
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const httpClient: AxiosInstance = axios.create({
-    baseURL: BASE_URL,
+    baseURL: `${BASE_URL}/api/v1`,
     timeout: 10_000,
     withCredentials: true,
     headers: { 'Content-Type': 'application/json' },
