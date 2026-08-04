@@ -1,0 +1,70 @@
+{
+  "errors": {
+    "GENERIC": "Algo salió mal. Inténtalo de nuevo."
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de nuevo",
+      "subtitle": "Inicia sesión para continuar",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "noAccount": "¿No tienes cuenta?",
+      "createOne": "Crea una",
+      "orContinueWith": "O continúa con",
+      "brandSubtitle": "Inicia sesión para continuar justo donde lo dejaste.",
+      "welcomeBack": "Bienvenido de nuevo",
+      "brandTitle": "Soft&Stuff"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Vamos a configurarte",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "passwordPlaceholder": "Al menos 8 caracteres",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Inicia sesión",
+      "brandSubtitle": "Cree una cuenta para realizar un seguimiento de los pedidos, guardar favoritos y pagar más rápido",
+      "brandTitle": "Únase suave",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Vuelva a ingresar su contraseña",
+      "firstNamePlaceholder": "Nombre",
+      "lastNamePlaceholder": "Apellido",
+      "hidePassword": "Ocultar contraseña",
+      "showPassword": "Mostrar contraseña"
+    },
+    "errors": {
+      "INVALID_EMAIL": "Ingresa un correo electrónico válido",
+      "PASSWORD_REQUIRED": "La contraseña es obligatoria",
+      "PASSWORD_EMPTY": "La contraseña no debe estar vacía",
+      "PASSWORD_TOO_SHORT": "Al menos 8 caracteres",
+      "PASSWORD_TOO_LONG": "La contraseña debe tener menos de 72 caracteres",
+      "PASSWORD_NO_UPPERCASE": "Incluye al menos una mayúscula",
+      "PASSWORD_NO_NUMBER": "Incluye al menos un número",
+      "FIRST_NAME_REQUIRED": "El nombre es obligatorio",
+      "FIRST_NAME_EMPTY": "El nombre no debe estar vacío",
+      "FIRST_NAME_TOO_LONG": "El nombre debe tener menos de 100 caracteres",
+      "STRING_REQUIRED": "El apellido debe ser un texto",
+      "LAST_NAME_TOO_LONG": "El apellido debe tener menos de 100 caracteres",
+      "REQUIRED": "Este campo es obligatorio",
+      "CONFIRM_PASSWORD_REQUIRED": "Por favor confirma tu contraseña",
+      "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden"
+    },
+    "common": {
+      "apple": "Apple",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "Introduce tu correo electrónico",
+      "google": "Google",
+      "password": "Contraseña"
+    }
+  },
+  "nav": {
+    "home": "Inicio",
+    "categories": "Categorías",
+    "cart": "Carrito",
+    "profile": "Perfil"
+  }
+}

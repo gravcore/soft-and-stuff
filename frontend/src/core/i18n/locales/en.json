@@ -1,0 +1,70 @@
+{
+  "errors": {
+    "GENERIC": "Something went wrong. Please try again."
+  },
+  "auth": {
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "google": "Google",
+      "apple": "Apple"
+    },
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to continue",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Login",
+      "submitting": "Signing in…",
+      "noAccount": "No account?",
+      "createOne": "Create one",
+      "orContinueWith": "Or continue with",
+      "brandSubtitle": "Sign in to pick up right where you left off.",
+      "welcomeBack": "Welcome Back",
+      "brandTitle": "Soft&Stuff"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Let's get you set up",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "submit": "Create Account",
+      "submitting": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "brandTitle": "Join Soft&Stuff",
+      "brandSubtitle": "Create an account to track orders, save favorites, and check out faster",
+      "firstNamePlaceholder": "Name",
+      "lastNamePlaceholder": "Last name",
+      "hidePassword": "Hide password",
+      "showPassword": "Show password"
+    },
+    "errors": {
+      "INVALID_EMAIL": "Enter a valid email address",
+      "PASSWORD_REQUIRED": "Password is required",
+      "PASSWORD_EMPTY": "Password must not be empty",
+      "PASSWORD_TOO_SHORT": "At least 8 characters",
+      "PASSWORD_TOO_LONG": "Password must be under 72 characters",
+      "PASSWORD_NO_UPPERCASE": "Include at least one uppercase letter",
+      "PASSWORD_NO_NUMBER": "Include at least one number",
+      "CONFIRM_PASSWORD_REQUIRED": "Please confirm your password",
+      "PASSWORDS_DO_NOT_MATCH": "Passwords do not match",
+      "FIRST_NAME_REQUIRED": "First name is required",
+      "FIRST_NAME_EMPTY": "First name must not be empty",
+      "FIRST_NAME_TOO_LONG": "First name must be under 100 characters",
+      "STRING_REQUIRED": "Last name must be a string",
+      "LAST_NAME_TOO_LONG": "Last name must be under 100 characters",
+      "REQUIRED": "This field is required"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "cart": "Cart",
+    "profile": "Profile"
+  }
+}

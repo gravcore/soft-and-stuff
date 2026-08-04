@@ -1,6 +1,7 @@
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { useTheme, type Theme } from '@/core/theme/ThemeContext';
-import styles from './ThemeToggle.module.css';
+import { SegmentToggle } from '../SegmentToggle/SegmentToggle';
+import { useTranslation } from 'react-i18next';
 
 const OPTIONS: { value: Theme; icon: typeof Sun; label: string }[] = [
     { value: 'light', icon: Sun, label: 'Light' },
@@ -10,28 +11,14 @@ const OPTIONS: { value: Theme; icon: typeof Sun; label: string }[] = [
 
 export function ThemeToggle() {
     const { theme, setTheme } = useTheme();
-    const activeIndex = OPTIONS.findIndex((o) => o.value === theme);
+    const { t } = useTranslation();
 
     return (
-        <div className={styles.track} role='radiogroup' aria-label='Theme'>
-            <div
-                className={styles.indicator}
-                style={{ transform: `translateX(${activeIndex * 100}%)`}}
-            />
-            {OPTIONS.map(({ value, icon: Icon, label }) => (
-                <button
-                    key={value}
-                    type='button'
-                    role='radio'
-                    aria-checked={theme === value}
-                    aria-label={label}
-                    title={label}
-                    className={styles.option}
-                    onClick={() => setTheme(value)}
-                >
-                    <Icon size={16} strokeWidth={2} />
-                </button>
-            ))}
-        </div>
+        <SegmentToggle 
+            options={OPTIONS}
+            activeValue={theme}
+            onChange={(value) => setTheme(value)}
+            ariaLabel={t('nav.theme', 'Theme')}
+        />
     );
 }

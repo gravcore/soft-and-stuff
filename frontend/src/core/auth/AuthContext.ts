@@ -14,6 +14,7 @@ export interface AuthContextValue {
     user: AuthUser | null;
     setUser: (user: AuthUser | null) => void;
     isLoading: boolean;
+    setIsLoading: (loading: boolean) => void;
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null);

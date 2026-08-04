@@ -32,7 +32,6 @@ httpClient.interceptors.response.use(
                 return httpClient(original);
             } catch {
                 setAccessToken(null);
-                window.location.href = '/login';
             };
 
             return Promise.reject(error);

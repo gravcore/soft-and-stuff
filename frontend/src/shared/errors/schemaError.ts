@@ -1,0 +1,1 @@
+export const schemaError = (code: string, message: string) => ({ message, params: { code } });

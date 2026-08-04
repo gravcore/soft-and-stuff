@@ -1,29 +1,112 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useLogin } from '../hooks/useLogin';
 import { useNavigate, Link } from 'react-router-dom';
+import { Package, Mail, Lock, ShoppingBag } from 'lucide-react';
+import { loginSchema, type LoginInput  } from '../schema/authSchema';
+import styles from './LoginPage.module.css';
+import { parseApiError } from '@/shared/utils/parseApiError';
+import { useTranslation } from 'react-i18next';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
     const { mutate: login, isPending, error } = useLogin();
+    const { t } = useTranslation();
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const form = new FormData(e.currentTarget);
-        login(
-            { email: form.get('email') as string, password: form.get('password') as string },
-            { onSuccess: () => navigate('/') }
-        );
-    };
+    const { register, handleSubmit, formState: { errors }} = useForm<LoginInput>({
+        resolver: zodResolver(loginSchema),
+        mode: 'onBlur', // Checks until the user clicks/tabs
+    });
 
-    return (
-        <div>
-            <h1>Sign in</h1>
-            <form onSubmit={handleSubmit}>
-                <label>Email <input type="email" name='email' required autoComplete='email' /></label>
-                <label>Password <input type="password" name='password' required autoComplete='current-password' /></label>
-                { error && <p>{(error as Error).message}</p>}
-                <button type="submit" disabled={isPending}>{isPending ? 'Signing in...' : 'Sign in' }</button>
-            </form>
-            <p>No account? <Link to="/register">Create one</Link></p>
+    const onSubmit = (data: LoginInput) => {
+        login(data, { onSuccess: () => navigate('/') });
+    }
+
+    const { codes, hasCodes, fallbackMessage } = parseApiError(error);
+
+    return(
+        <div className={styles.page}>
+            <div className={styles.brandPanel}>
+                <div className={styles.brandContent}>
+                    <div className={styles.brandBadge}>
+                       <ShoppingBag size={28} strokeWidth={2} />
+                    </div>
+                    <h2 className={styles.brandTitle}>{t('auth.login.brandTitle')}</h2>
+                    <p className={styles.brandSubtitle}>{t('auth.login.brandSubtitle')}</p>
+                </div>
+            </div>
+
+            <div className={styles.formPanel}>
+                <div className={styles.wrap}>
+                    <div className={styles.badge}>
+                        <Package size={26} strokeWidth={2} />
+                    </div>
+                    <h1 className={styles.title}>{t('auth.login.title')}</h1>
+                    <p className={styles.subtitle}>{t('auth.login.subtitle')}</p>
+
+                    <div className={styles.card}>
+                        <form onSubmit={handleSubmit(onSubmit)} className={styles.form} noValidate>
+                            <label className={styles.field}>
+                                <span className={styles.fieldLabel}>{t('auth.common.email')}</span>
+                                <span className={`${styles.inputWrap} ${errors.email ? styles.inputWrapError : ''}`}>
+                                    <Mail size={18} className={styles.inputIcon} />
+                                    <input
+                                        {...register('email')} 
+                                        type="email"
+                                        placeholder={t('auth.common.emailPlaceholder')}
+                                        autoComplete='email'
+                                        className={styles.input} 
+                                    />
+                                </span>
+                                {errors.email && <span className={styles.fieldError}>{errors.email.message}</span>}
+                            </label>
+
+                            <label className={styles.field}>
+                                <span className={styles.fieldLabel}>{t('auth.common.password')}</span>
+                                <span className={`${styles.inputWrap} ${errors.password ? styles.inputWrapError : ''}`}>
+                                    <Lock size={18} className={styles.inputIcon} />
+                                    <input
+                                        {...register('password')} 
+                                        type="password"
+                                        placeholder={t('auth.login.passwordPlaceholder')}
+                                        autoComplete='current-password'
+                                        className={styles.input}
+                                    />
+                                </span>
+                                {errors.password && <span className={styles.fieldError}>{errors.password.message}</span>}
+                            </label>
+
+                            <Link to='/forgot-password' className={styles.forgot}>{t('auth.login.forgotPassword')}</Link>
+
+                            {error && (
+                                hasCodes ? (
+                                    <ul className={styles.errorList}>
+                                        {codes.map((code, i) => <li key={i} className={styles.error}>{t(`auth.errors.${code}`, code)}</li>)}
+                                    </ul>
+                                ) : (
+                                    <p className={styles.error}>{fallbackMessage}</p>
+                                )
+                            )}
+
+                            <button type="submit" disabled={isPending} className={styles.submit}>
+                                {isPending ? t('auth.login.submitting') : t('auth.login.submit')}
+                            </button>
+                        </form>
+                    </div>
+
+                    <div className={styles.divider}><span>{t('auth.login.orContinueWith')}</span></div>
+
+                    <div className={styles.social}>
+                        <button className={styles.socialBtn}>{t('auth.common.google')}</button>
+                        <button className={styles.socialBtn}>{t('auth.common.apple')}</button>
+                    </div>
+
+                    <div className={styles.footer}>
+                        {t('auth.login.noAccount')} <Link to='/register' className={styles.link}>{t('auth.login.createOne')}</Link>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-};
+}
+
