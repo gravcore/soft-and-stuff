@@ -14,9 +14,25 @@ interface LoginInput {
 }
 
 // Normalize snake_case coming from the backend
-interface RawUser { id: string; email: string; user_role: 'customer' | 'admin'; first_name: string; last_name: string | null; }
-const mapUser = (raw: RawUser): AuthUser => 
-    ({ id: raw.id, email: raw.email, role: raw.user_role, firstName: raw.first_name, lastName: raw.last_name });
+interface RawUser {
+    id: string;
+    email: string;
+    user_role: 'customer' | 'admin';
+    first_name: string;
+    last_name: string | null;
+    avatar_url: string | null;
+    is_verified: boolean;
+}
+
+const mapUser = (raw: RawUser): AuthUser => ({
+    id: raw.id,
+    email: raw.email,
+    role: raw.user_role,
+    firstName: raw.first_name,
+    lastName: raw.last_name,
+    avatarUrl: raw.avatar_url,
+    isVerified: raw.is_verified,
+});
 
 export const registerUser = async (input: RegisterInput): Promise<{user: AuthUser}> => {
     const { data } = await httpClient.post<{ data: { user: RawUser }}>('/auth/register', input);
@@ -26,6 +42,7 @@ export const registerUser = async (input: RegisterInput): Promise<{user: AuthUse
 export const loginUser = async (input: LoginInput): Promise<{ accessToken: string }> => {
     const { data } = await httpClient.post<{ data: { accessToken: string }}>('/auth/login', input);
     setAccessToken(data.data.accessToken);
+    localStorage.setItem('isLoggedIn', 'true');
     return data.data;
 };
 
@@ -37,4 +54,5 @@ export const fetchCurrentUser = async (): Promise<AuthUser> => {
 export const logoutUser = async (): Promise<void> => {
     await httpClient.post('/auth/logout');
     setAccessToken(null);
+    localStorage.removeItem('isLoggedIn');
 };

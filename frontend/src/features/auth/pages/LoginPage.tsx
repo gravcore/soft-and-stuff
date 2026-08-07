@@ -97,7 +97,13 @@ export const LoginPage = () => {
                     <div className={styles.divider}><span>{t('auth.login.orContinueWith')}</span></div>
 
                     <div className={styles.social}>
-                        <button className={styles.socialBtn}>{t('auth.common.google')}</button>
+                        <button
+                            type='button'
+                            className={styles.socialBtn}
+                            onClick={() => { window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/v1/auth/google`; }}
+                        >
+                            {t('auth.common.google')}
+                        </button>
                         <button className={styles.socialBtn}>{t('auth.common.apple')}</button>
                     </div>
 

@@ -33,9 +33,9 @@ httpClient.interceptors.response.use(
             } catch {
                 setAccessToken(null);
             };
-
-            return Promise.reject(error);
         }
+
+        return Promise.reject(error);
     }
 );
 

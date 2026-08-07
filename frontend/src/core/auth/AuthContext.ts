@@ -8,6 +8,8 @@ export interface AuthUser {
     role: UserRole;
     firstName: string;
     lastName: string | null;
+    avatarUrl: string | null;  
+    isVerified: boolean;       
 }
 
 export interface AuthContextValue {

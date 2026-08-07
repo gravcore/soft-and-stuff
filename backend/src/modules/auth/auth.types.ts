@@ -14,3 +14,10 @@ export interface TokenPair {
     accessToken: string;
     refreshToken: string;
 }
+
+export interface GoogleProfile {
+    id: string;
+    emails?: { value: string }[];
+    name?: { givenName?: string; familyName?: string; }
+    photos?: { value: string }[];
+}

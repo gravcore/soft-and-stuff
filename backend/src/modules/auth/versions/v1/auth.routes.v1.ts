@@ -4,6 +4,8 @@ import { loginSchema, refreshSchema, registerSchema } from "../../auth.schema";
 import { authControllerV1 } from "./auth.controller.v1";
 import { authLimiter } from "@/shared/middleware/rateLimit.middleware";
 import { authenticate } from "@/shared/middleware/auth.middleware";
+import passport from "../../auth.passport";
+import { env } from "@/config/env";
 
 const router = Router();
 
@@ -69,5 +71,11 @@ router.post('/logout', authenticate(), authControllerV1.logout);
  *       401: { description: Missing or invalid token }
  */
 router.get('/me', authenticate(), authControllerV1.me);
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+
+router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: `${env.FRONTEND_URL}/login` }),
+    authControllerV1.googleCallback
+);
 
 export default router;

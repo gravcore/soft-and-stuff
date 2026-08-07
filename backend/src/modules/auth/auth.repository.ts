@@ -1,15 +1,16 @@
 import { db } from "@/config/database";
 import { hashToken } from "@/shared/utils/crypto";
 
-interface UserRow {
-    id: string;
-    email: string;
-    password_hash: string | null;
-    first_name: string | null;
-    last_name: string | null;
-    user_role: 'customer' | 'admin',
-    is_verified: boolean,
-    created_at: Date
+export interface UserRow {
+  id: string; 
+  email: string; 
+  password_hash: string | null;
+  first_name: string | null; 
+  last_name: string | null;
+  avatar_url: string | null;
+  user_role: 'customer' | 'admin'; 
+  is_verified: boolean; 
+  created_at: Date;
 }
 
 interface CreateUserInput {
@@ -53,7 +54,7 @@ export const authRepository = {
     async findById(id: string): Promise<Omit<UserRow, 'password_hash'> | null> {
         const { rows } = await db.query<Omit<UserRow, 'password_hash'>>(
             `
-                SELECT id, email, first_name, last_name, user_role, is_verified, created_at
+                SELECT id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at
                 FROM users
                 WHERE id = $1 
                 LIMIT 1
@@ -69,7 +70,7 @@ export const authRepository = {
             `
                 INSERT INTO users (email, password_hash, first_name, last_name)
                 VALUES ($1, $2, $3, $4)
-                RETURNING id, email, first_name, last_name, user_role, is_verified, created_at
+                RETURNING id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at
             `,
             [input.email, input.passwordHash, input.firstName, input.lastName ?? null]
         );
@@ -140,4 +141,15 @@ export const authRepository = {
             [userId]
         );
     },
+
+    async createOAuthUser(input: { email: string; firstName: string; lastName?: string; avatarUrl: string | null}): Promise<Omit<UserRow, 'password_hash'>> {
+        const { rows } = await db.query<Omit<UserRow, 'password_hash'>>(
+            `INSERT INTO users (email, password_hash, first_name, last_name,
+             avatar_url, is_verified)
+             VALUES ($1, NULL, $2, $3, $4, true)
+             RETURNING id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at`,
+             [input.email, input.firstName, input.lastName ?? null, input.avatarUrl]
+        );
+        return rows[0];
+    },    
 };

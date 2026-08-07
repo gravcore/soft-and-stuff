@@ -6,7 +6,7 @@ export function Protected() {
     return (
         <div>
             <div>Home protected</div>
-            {user ? <p>Logged in as: {user.firstName} {user.email}</p> : <p>Not logged in</p>}
+            {user ? <div><p>Logged in as: {user.firstName} {user.email}</p> {user.avatarUrl && (<img src={user.avatarUrl} />)}</div> : <p>Not logged in</p>}
         </div>
     );
 }
