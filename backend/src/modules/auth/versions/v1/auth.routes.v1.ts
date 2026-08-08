@@ -6,6 +6,7 @@ import { authLimiter } from "@/shared/middleware/rateLimit.middleware";
 import { authenticate } from "@/shared/middleware/auth.middleware";
 import passport from "../../auth.passport";
 import { env } from "@/config/env";
+import { AppError } from "@/shared/errors/AppError";
 
 const router = Router();
 
@@ -72,10 +73,29 @@ router.post('/logout', authenticate(), authControllerV1.logout);
  */
 router.get('/me', authenticate(), authControllerV1.me);
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+const ALLOWED_PROVIDERS = ['google'] as const; // whitelist
+type Provider = typeof ALLOWED_PROVIDERS[number];
 
-router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: `${env.FRONTEND_URL}/login` }),
-    authControllerV1.googleCallback
+router.get('/:provider', (req, res, next) => {
+    const provider = req.params.provider;
+    
+    if (!ALLOWED_PROVIDERS.includes(provider as Provider)) {
+        return next(new AppError('Unknown provider', 400, 'INVALID_PROVIDER'));
+    }
+
+    passport.authenticate(provider, { session: false, scope: ['profile', 'email'] })(req, res, next);
+});
+
+router.get('/:provider/callback', (req, res, next) => {
+    const provider = req.params.provider;
+
+    if (!ALLOWED_PROVIDERS.includes(provider as Provider)) {
+        return next(new AppError('Unknown provider', 400, 'INVALID_PROVIDER'));
+    }
+
+    passport.authenticate(provider, { session: false, failureRedirect: `${env.FRONTEND_URL}/login` })(req, res, next);
+}, 
+    authControllerV1.oAuthCallback
 );
 
 export default router;

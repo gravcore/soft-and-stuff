@@ -4,7 +4,7 @@ import { authService } from '../../auth.service';
 import { sendSuccess } from '@/shared/utils/response';
 import { AuthRequest } from '@/shared/types';
 import { AppError } from '@/shared/errors/AppError';
-import { GoogleProfile } from '../../auth.types';
+import { OAuthProfile } from '../../auth.types';
 
 // Cookie options for security
 const COOKIE_OPTIONS = {
@@ -67,11 +67,11 @@ export const authControllerV1 = {
         } catch (err) { next(err); }
     },
 
-    async googleCallback(req: Request, res: Response, next: NextFunction) {
+    async oAuthCallback(req: Request, res: Response, next: NextFunction) {
         try {
-            const profile = req.user as unknown as GoogleProfile;
+            const profile = req.user as unknown as OAuthProfile;
 
-            const { refreshToken } = await authService.loginWithGoogle(profile, deviceInfo(req))
+            const { refreshToken } = await authService.loginWithOAuth(profile, deviceInfo(req))
             res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
             res.redirect(`${env.FRONTEND_URL}/oauth-callback`);
         } catch (err) { next(err); }

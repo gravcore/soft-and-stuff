@@ -1,6 +1,6 @@
 import { AppError } from "@/shared/errors/AppError";
-import { authRepository, UserRow } from "./auth.repository";
-import { GoogleProfile, LoginInput, RegisterInput, TokenPair } from "./auth.types";
+import { authRepository } from "./auth.repository";
+import { LoginInput, OAuthProfile, RegisterInput, TokenPair } from "./auth.types";
 import { generateToken, hashPassword, hashToken, verifyPassword } from "@/shared/utils/crypto";
 import jwt from 'jsonwebtoken';
 import { env } from '@/config/env';
@@ -99,19 +99,22 @@ export const authService = {
         return { accessToken, refreshToken };
     },
 
-    async loginWithGoogle(profile: GoogleProfile, deviceInfo: string): Promise<TokenPair & { userId: string }> {
-        const email = profile.emails?.[0]?.value;
-        if (!email) throw new AppError('Google account has no email', 400, 'GOOGLE_NO_EMAIL');
-
-        let user: UserRow | Omit<UserRow, 'password_hash'> | null = await authRepository.findByEmail(email);
+    async loginWithOAuth(profile: OAuthProfile, deviceInfo: string): Promise<TokenPair & { userId: string }> {
+        
+        // 1. Check if already linked this exact provider account before to log them directly
+        const linked = await authRepository.findByOAuthAccount(profile.provider, profile.providerId);
+        let user = linked ? await authRepository.findById(linked.user_id) : null;
 
         if (!user) {
-            user = await authRepository.createOAuthUser({
-                email,
-                firstName: profile.name?.givenName ?? '',
-                lastName: profile.name?.familyName,
-                avatarUrl: profile.photos?.[0]?.value ?? null,
-            });
+            // 2. Check if a user with this email already exists (e.g. signed up with password, or a different provider)
+            const byEmail = await authRepository.findByEmail(profile.email);
+            if (byEmail) {
+                user = byEmail;
+                await authRepository.linkOAuthAccount(user.id, profile.provider, profile.providerId);
+            } else {
+                user = await authRepository.createOAuthUser({ email: profile.email, firstName: profile.firstName, lastName: profile.lastName, avatarUrl: profile.avatarUrl });
+                await authRepository.linkOAuthAccount(user.id, profile.provider, profile.providerId);
+            }
         }
 
         const tokens = await authService._issueTokenPair(user.id, user.user_role, deviceInfo);

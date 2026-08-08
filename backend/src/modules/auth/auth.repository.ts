@@ -151,5 +151,21 @@ export const authRepository = {
              [input.email, input.firstName, input.lastName ?? null, input.avatarUrl]
         );
         return rows[0];
-    },    
+    },
+    
+    async findByOAuthAccount(provider: string, providerId: string) {
+        const { rows } = await db.query<{ user_id: string }>(
+            `SELECT user_id FROM oauth_accounts WHERE oauth_provider = $1 AND provider_user_id = $2 LIMIT 1`,
+            [provider, providerId]
+        );
+        return rows[0] ?? null;
+    },
+
+    async linkOAuthAccount(userId: string, provider: string, providerId: string): Promise<void> {
+        await db.query(
+            `INSERT INTO oauth_accounts (user_id, oauth_provider, provider_user_id)
+             VALUES ($1, $2, $3)`,
+            [userId, provider, providerId]
+        );
+    },
 };

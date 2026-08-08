@@ -15,9 +15,11 @@ export interface TokenPair {
     refreshToken: string;
 }
 
-export interface GoogleProfile {
-    id: string;
-    emails?: { value: string }[];
-    name?: { givenName?: string; familyName?: string; }
-    photos?: { value: string }[];
+export interface OAuthProfile {
+    provider: string;
+    providerId: string;
+    email: string;
+    firstName: string;
+    lastName?: string; 
+    avatarUrl: string | null;
 }
