@@ -168,4 +168,55 @@ export const authRepository = {
             [userId, provider, providerId]
         );
     },
+
+    async savePasswordResetOtp(userId: string, otpHash: string, expiresAt: Date): Promise<void> {
+        await db.query(
+            `INSERT INTO password_reset_otps (user_id, otp_hash, expires_at)
+             VALUES ($1, $2, $3)`,
+            [userId, otpHash, expiresAt],
+        );
+    },
+
+    async findActiveOtp(userId: string) {
+        const { rows } = await db.query<{ id: string, otp_hash: string, attempts: number }>(
+            `SELECT id, otp_hash, attempts FROM password_reset_otps
+             WHERE user_id = $1 AND used = false AND expires_at > NOW()
+             ORDER BY created_at DESC LIMIT 1`,
+             [userId],
+        );
+        return rows[0] ?? null;
+    },
+
+    async incrementOtpAttempts(otpId: string): Promise<void> {
+        await db.query('UPDATE password_reset_otps SET attempts = attempts + 1 WHERE id = $1', [otpId]);
+    },
+
+    async markOtpVerified(otpId: string): Promise<void> {
+        await db.query(`UPDATE password_reset_otps SET verified = true WHERE id = $1`, [otpId]);
+    },
+
+    async findVerifiedOtp(userId: string) {
+        const { rows } = await db.query<{ id: string }>(
+            `SELECT id FROM password_reset_otps WHERE user_id = $1 AND verified = true AND used = false
+            AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1`,
+            [userId],
+        );
+        return rows[0] ?? null;
+    },
+    
+    async markOtpUsed(otpId: string): Promise<void> {
+        await db.query(`DELETE FROM password_reset_otps WHERE id = $1`, [otpId]);
+    },
+
+    async updatePassword(userId: string, passwordHash: string): Promise<void> {
+        await db.query(`UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`, [passwordHash, userId]);
+    },
+
+    async countRecentOtps(userId: string, since: Date): Promise<number> {
+        const { rows } = await db.query<{ count: string }>(
+            `SELECT COUNT(*) FROM password_reset_otps WHERE user_id = $1 AND created_at > $2`,
+            [userId, since],
+        );
+        return Number(rows[0].count);
+    },
 };

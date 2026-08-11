@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchCurrentUser } from "../services/authApi";
+import { fetchCurrentUser } from "../../services/authApi";
 import { useAuthContext } from "@/core/auth/AuthContext";
 import { Spinner } from "@/shared/components/Spinner/Spinner";
 

@@ -1,7 +1,8 @@
 import type { AxiosError } from 'axios';
 import type { ApiErrorResponse } from '../types/api';
+import { useTranslation } from 'react-i18next';
 
-export function parseApiError(error: unknown) {
+export function useParseApiError(error: unknown) {
 
     const apiError = (error as AxiosError<ApiErrorResponse>)?.response?.data?.error;
 
@@ -10,9 +11,11 @@ export function parseApiError(error: unknown) {
         ...(apiError?.errors?.map((e) => e.code ?? e.message) ?? []),
     ].filter(Boolean) as string[];
 
+    const { t } = useTranslation();
+
     return {
         codes,
         hasCodes: codes.length > 0,
-        fallbackMessage: (error as Error)?.message ?? 'Something went wrong. Please try again',
+        fallbackMessage: (error as Error)?.message ?? t('errors.GENERIC'),
     };
 }

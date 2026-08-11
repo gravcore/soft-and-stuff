@@ -2,7 +2,8 @@ import { render } from '@react-email/render';
 import { sendEmail } from '@/shared/adapters/mailer';
 import { WelcomeEmail } from './templates/welcome.template';
 import { OrderConfirmationEmail } from './templates/orderConfirmation.template';
-import { WelcomeEmailData, OrderConfirmationEmailData } from './email.types';
+import { WelcomeEmailData, OrderConfirmationEmailData, PasswordResetOtpEmailData } from './email.types';
+import { PasswordResetOtpEmail } from './templates/passwordResetOtp.template';
 
 export const emailService = {
 
@@ -33,5 +34,10 @@ export const emailService = {
             subject: `Order confirmed - ${data.orderNumber}`,
             html,
         });
+    },
+
+    async sendPasswordResetOtp(data: PasswordResetOtpEmailData): Promise<void> {
+        const html = await render(PasswordResetOtpEmail({ otp: data.otp, ttlMinutes: data.ttlMinutes }));
+        await sendEmail({ to: data.to, subject: 'Reset your password', html });
     },
 };

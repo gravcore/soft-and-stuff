@@ -24,3 +24,12 @@ export const authLimiter = rateLimit({
     handler: rateLimitHandler,
     skip: () => process.env.NODE_ENV === 'test',
 });
+
+export const refreshLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 100,
+    standardHeaders: true,
+    legacyHeaders: false,
+    handler: rateLimitHandler,
+    skip: () => process.env.NODE_ENV === 'test',
+});

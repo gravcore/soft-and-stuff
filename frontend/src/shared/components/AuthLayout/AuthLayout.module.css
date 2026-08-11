@@ -1,0 +1,150 @@
+.page {
+    min-height: 100dvh;
+    display: flex;
+}
+
+.brandPanel { display: none; }
+
+.formPanel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.wrap {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes rise {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.badge {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--accent), var(--accent-admin));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 20px -6px rgba(0,0,0,0.25);
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: 1.625rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 0.875rem;
+    margin: 0 0 1.75rem;
+}
+
+.card {
+    width: 100%;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px -12px rgba(0,0,0,0.12);
+}
+
+.footer {
+    margin-top: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--muted);
+}
+
+.link {
+    color: var(--accent-admin);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* === Desktop >= 900px === */
+@media (min-width: 900px) {
+    .brandPanel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(160deg, var(--accent-admin), #2E2F8F 70%);
+    }
+    
+    .brandPanel::before {
+        content: '';
+        position: absolute;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15, transparent 70%));
+        top: -120px;
+        right: -120px;
+    }
+
+    .brandContent {
+        position: relative;
+        z-index: 1;
+        max-width: 380px;
+        padding: 3rem;
+        color: white;
+        animation: rise 0.6s cubic-bezier(0.16, 1, 0.30, 1) both;
+    }
+
+    .brandBadge {
+        width: 56px;
+        height: 56px;
+        border-radius: var(--radius-md);
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .brandTitle {
+        font-family: var(--font-display);
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1.2;
+        margin: 0 0 12px;
+    }
+
+    .brandSubtitle {
+        font-size: 0.9375rem;
+        opacity: 0.85;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .formPanel {
+        flex: 1;
+        padding: 3rem;
+    }
+}
+
+/* === Watch-class === */
+@media (max-width: 230px) {
+    .formPanel { padding: 0.75rem; }
+    .card { padding: 1rem; }
+    .title { font-size: 1.125rem; }
+    .badge { width: 40px; height: 40px; margin-bottom: 0.75rem; }
+}

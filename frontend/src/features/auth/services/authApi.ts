@@ -24,6 +24,11 @@ interface RawUser {
     is_verified: boolean;
 }
 
+interface OtpResponse {
+    message: string;
+    expiresInSeconds: number;
+}
+
 const mapUser = (raw: RawUser): AuthUser => ({
     id: raw.id,
     email: raw.email,
@@ -55,4 +60,24 @@ export const logoutUser = async (): Promise<void> => {
     await httpClient.post('/auth/logout');
     setAccessToken(null);
     localStorage.removeItem('isLoggedIn');
+};
+
+export const loginWithOneTap = async (credential: string): Promise<{ accessToken: string }> => {
+    const { data } = await httpClient.post<{ data: { accessToken: string } }>('/auth/google/one-tap', { credential });
+    setAccessToken(data.data.accessToken);
+    localStorage.setItem('isLoggedIn', 'true');
+    return data.data;
+}
+
+export const forgotPassword = async (email: string): Promise<OtpResponse>  => {
+    const { data } = await httpClient.post<{ data: OtpResponse }>('/auth/forgot-password', { email });
+    return data.data;
+};
+
+export const verifyResetOtp = async (email: string, otp: string): Promise<void> => {
+    await httpClient.post('/auth/verify-otp', { email, otp });
+};
+
+export const resetPassword = async (email: string, newPassword: string): Promise<void> => {
+    await httpClient.post('/auth/reset-password', { email, newPassword });
 };

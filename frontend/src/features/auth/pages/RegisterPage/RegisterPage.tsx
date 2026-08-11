@@ -1,12 +1,12 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRegister } from '../hooks/useRegister';
+import { useRegister } from '../../hooks/useRegister';
 import { useNavigate, Link } from 'react-router-dom';
 import { Package, Mail, Lock, User, ShoppingBag } from 'lucide-react';
-import { registerSchema, type RegisterInput  } from '../schema/authSchema';
+import { registerSchema, type RegisterInput  } from '../../schema/authSchema';
 import styles from './RegisterPage.module.css';
 import { FormField } from '@/shared/components/FormField/FormField';
-import { parseApiError } from '@/shared/utils/parseApiError';
+import { useParseApiError } from '@/shared/hooks/useParseApiError';
 import { useTranslation } from 'react-i18next';
 
 export const RegisterPage = () => {
@@ -25,7 +25,7 @@ export const RegisterPage = () => {
         registerUser(payload, { onSuccess: () => navigate('/') });
     };
 
-    const { codes, hasCodes, fallbackMessage } = parseApiError(error);
+    const { codes, hasCodes, fallbackMessage } = useParseApiError(error);
 
     return (
         <div className={styles.page}>

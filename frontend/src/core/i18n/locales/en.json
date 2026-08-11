@@ -58,7 +58,35 @@
       "FIRST_NAME_TOO_LONG": "First name must be under 100 characters",
       "STRING_REQUIRED": "Last name must be a string",
       "LAST_NAME_TOO_LONG": "Last name must be under 100 characters",
-      "REQUIRED": "This field is required"
+      "REQUIRED": "This field is required",
+      "INVALID_OTP": "Invalid or expired code",
+      "TOO_MANY_ATTEMPTS": "Too many attempts, request a new code",
+      "NOT_VERIFIED": "Session expired, please start again"
+    },
+    "forgot": {
+      "brandTitle": "Forgot your password?",
+      "brandSubtitle": "No worries, we'll help you get back in.",
+      "backToLogin": "Back to login",
+      "sending": "Sending...",
+      "sendCode": "Send code",
+      "codeSentTo": "Code sent to",
+      "verifying": "Verifying...",
+      "verify": "Verify",
+      "resendCode": "Resend code",
+      "newPassword": "New password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "saving": "Saving...",
+      "savePassword": "Save password",
+      "codeExpired": "Code expired",
+      "emailTitle": "Reset your password",
+      "emailSubtitle": "Enter your email and we'll send you a code",
+      "otpTitle": "Enter the code",
+      "otpSubtitle": "Check your inbox for the 6-digit code",
+      "passwordTitle": "Set a new password",
+      "passwordSubtitle": "Choose something you haven't used before",
+      "expired": "Expired"
     }
   },
   "nav": {

@@ -5,6 +5,7 @@ import { sendSuccess } from '@/shared/utils/response';
 import { AuthRequest } from '@/shared/types';
 import { AppError } from '@/shared/errors/AppError';
 import { OAuthProfile } from '../../auth.types';
+import { verifyOneTapCredential } from '../../auth.oneTap';
 
 // Cookie options for security
 const COOKIE_OPTIONS = {
@@ -76,4 +77,35 @@ export const authControllerV1 = {
             res.redirect(`${env.FRONTEND_URL}/oauth-callback`);
         } catch (err) { next(err); }
     },
-}
+
+    async googleOneTap(req: Request, res: Response, next: NextFunction) {
+        try {
+            const profile = await verifyOneTapCredential(req.body.credential);
+            
+            const { accessToken, refreshToken } = await authService.loginWithOAuth(profile, deviceInfo(req))
+            res.cookie('refreshToken', refreshToken, COOKIE_OPTIONS);
+            sendSuccess(res, { accessToken });
+        } catch (err) { next(err); }
+    },
+
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await authService.requestPasswordReset(req.body.email);
+            sendSuccess(res, { message: 'If the email exists, a code has been sent.', ...result });
+        } catch (err) { next(err); }
+    },
+
+    async verifyOtp(req: Request, res: Response, next: NextFunction) {
+        try {
+            await authService.verifyResetOtp(req.body.email, req.body.otp);
+            sendSuccess(res, { verified: true });
+        } catch (err) { next(err); }
+    },
+
+    async resetPassword(req: Request, res: Response, next: NextFunction) {
+        try {
+            await authService.resetPassword(req.body.email, req.body.newPassword);
+            sendSuccess(res, { message: 'Password updated. Please log in.' });
+        } catch (err) { next(err); }
+    },
+};

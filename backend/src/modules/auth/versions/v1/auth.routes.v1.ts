@@ -1,8 +1,8 @@
 import { validateSchema } from "@/shared/middleware/validateSchema.middleware";
 import { Router } from "express";
-import { loginSchema, refreshSchema, registerSchema } from "../../auth.schema";
+import { forgotPasswordSchema, loginSchema, refreshSchema, registerSchema, resetPasswordSchema, verifyOtpSchema } from "../../auth.schema";
 import { authControllerV1 } from "./auth.controller.v1";
-import { authLimiter } from "@/shared/middleware/rateLimit.middleware";
+import { authLimiter, refreshLimiter } from "@/shared/middleware/rateLimit.middleware";
 import { authenticate } from "@/shared/middleware/auth.middleware";
 import passport from "../../auth.passport";
 import { env } from "@/config/env";
@@ -49,7 +49,7 @@ router.post('/register', authLimiter, validateSchema(registerSchema), authContro
  *       422: { description: Validation error }
  */
 router.post('/login', authLimiter, validateSchema(loginSchema), authControllerV1.login);
-router.post('/refresh', authLimiter, validateSchema(refreshSchema), authControllerV1.refresh);
+router.post('/refresh', refreshLimiter, validateSchema(refreshSchema), authControllerV1.refresh);
 router.post('/logout', authenticate(), authControllerV1.logout);
 
 /**
@@ -97,5 +97,13 @@ router.get('/:provider/callback', (req, res, next) => {
 }, 
     authControllerV1.oAuthCallback
 );
+
+router.post('/google/one-tap', refreshLimiter, authControllerV1.googleOneTap);
+
+router.post('/forgot-password', authLimiter, validateSchema(forgotPasswordSchema), authControllerV1.forgotPassword);
+
+router.post('/verify-otp', authLimiter, validateSchema(verifyOtpSchema), authControllerV1.verifyOtp);
+
+router.post('/reset-password', authLimiter, validateSchema(resetPasswordSchema), authControllerV1.resetPassword);
 
 export default router;

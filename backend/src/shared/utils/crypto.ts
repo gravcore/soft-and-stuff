@@ -20,3 +20,6 @@ export const generateTrackingId = (): string => {
     const id = Array.from(bytes).map((b) => chars[b % chars.length]).join('');
     return `ORD-${id}`;
 }
+
+// Generate 6-digit numeric code for otp
+export const generateOtp = () => crypto.randomInt(0, 1_000_000).toString().padStart(6, '0');

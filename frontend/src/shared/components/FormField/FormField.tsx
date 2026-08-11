@@ -5,7 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import styles from './FormField.module.css';
 import { useTranslation } from 'react-i18next';
 
-interface ZodFieldError extends FieldError {
+export interface ZodFieldError extends FieldError {
     params?: { code?: string };
 }
 

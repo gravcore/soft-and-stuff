@@ -1,0 +1,30 @@
+.wrap {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.box {
+    width: 44px;
+    height: 52px;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    color: var(--ink);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.box:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent);
+    transform: scale(1.05);
+}
+
+.boxError {
+    border-color: var(--danger);
+}
