@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../errors/AppError';
 import { captureError } from '../adapters/errorTracker';
+import { env } from '@/config/env';
 
 export const errorHandler = (
     err: unknown,
@@ -28,7 +29,7 @@ export const errorHandler = (
         success: false,
         error: {
             code: 'INTERNAL_ERROR',
-            message: `Something went wrong: ${err ?? 'unknown error'}`,
+            message: env.NODE_ENV === 'development' ? `Something went wrong: ${err ?? 'unknown error'}` : 'Something went wrong. Please try again.',
         }
     });
 };

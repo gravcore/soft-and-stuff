@@ -20,6 +20,8 @@ const schema = z.object({
     JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
     JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
+    CSRF_SECRET: z.string().min(32),
+    
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
 

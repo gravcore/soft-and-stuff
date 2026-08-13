@@ -7,11 +7,13 @@ import { loginSchema, type LoginInput  } from '../../schema/authSchema';
 import styles from './LoginPage.module.css';
 import { useParseApiError } from '@/shared/hooks/useParseApiError';
 import { useTranslation } from 'react-i18next';
+import { useGoogleButton } from '../../hooks/useGoogleButton';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
     const { mutate: login, isPending, error } = useLogin();
     const { t } = useTranslation();
+    const googleButtonRef = useGoogleButton();
 
     const { register, handleSubmit, formState: { errors }} = useForm<LoginInput>({
         resolver: zodResolver(loginSchema),
@@ -43,6 +45,8 @@ export const LoginPage = () => {
                     </div>
                     <h1 className={styles.title}>{t('auth.login.title')}</h1>
                     <p className={styles.subtitle}>{t('auth.login.subtitle')}</p>
+
+                    <div className="mb-5" ref={googleButtonRef} />
 
                     <div className={styles.card}>
                         <form onSubmit={handleSubmit(onSubmit)} className={styles.form} noValidate>

@@ -1,6 +1,7 @@
 {
   "errors": {
-    "GENERIC": "Algo salió mal. Inténtalo de nuevo."
+    "GENERIC": "Algo salió mal. Inténtalo de nuevo.",
+    "INTERNAL_ERROR": "Algo salió mal. \nPor favor inténtalo de nuevo."
   },
   "auth": {
     "login": {
@@ -19,7 +20,7 @@
     },
     "register": {
       "title": "Crear cuenta",
-      "subtitle": "Vamos a configurarte",
+      "subtitle": "Empecemos",
       "firstName": "Nombre",
       "lastName": "Apellido",
       "passwordPlaceholder": "Al menos 8 caracteres",
@@ -28,7 +29,7 @@
       "hasAccount": "¿Ya tienes cuenta?",
       "signIn": "Inicia sesión",
       "brandSubtitle": "Cree una cuenta para realizar un seguimiento de los pedidos, guardar favoritos y pagar más rápido",
-      "brandTitle": "Únase suave",
+      "brandTitle": "Únete a Soft&Stuff",
       "confirmPassword": "Confirmar Contraseña",
       "confirmPasswordPlaceholder": "Vuelva a ingresar su contraseña",
       "firstNamePlaceholder": "Nombre",
@@ -51,7 +52,10 @@
       "LAST_NAME_TOO_LONG": "El apellido debe tener menos de 100 caracteres",
       "REQUIRED": "Este campo es obligatorio",
       "CONFIRM_PASSWORD_REQUIRED": "Por favor confirma tu contraseña",
-      "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden"
+      "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden",
+      "INVALID_OTP": "Código no válido o caducado",
+      "NOT_VERIFIED": "La sesión expiró, por favor comienza de nuevo.",
+      "TOO_MANY_ATTEMPTS": "Demasiados intentos, solicita un nuevo código"
     },
     "common": {
       "apple": "Apple",
@@ -59,12 +63,58 @@
       "emailPlaceholder": "Introduce tu correo electrónico",
       "google": "Google",
       "password": "Contraseña"
+    },
+    "forgot": {
+      "backToLogin": "Volver a iniciar sesión",
+      "brandSubtitle": "No te preocupes, te ayudaremos a volver a entrar.",
+      "brandTitle": "¿Olvidaste tu contraseña?",
+      "codeExpired": "Código caducado",
+      "codeSentTo": "Código enviado a",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Confirmar nueva contraseña",
+      "emailSubtitle": "Introduce tu email y te enviaremos un código",
+      "emailTitle": "Restablece tu contraseña",
+      "expired": "Venció",
+      "newPassword": "Nueva contraseña",
+      "newPasswordPlaceholder": "Ingrese una nueva contraseña",
+      "otpSubtitle": "Revisa tu bandeja de entrada para ver el código de 6 dígitos",
+      "otpTitle": "Introduce el código",
+      "passwordSubtitle": "Elige algo que no hayas usado antes",
+      "passwordTitle": "Establecer una nueva contraseña",
+      "resendCode": "Reenviar código",
+      "savePassword": "Cambiar contraseña",
+      "saving": "Cambiando...",
+      "sendCode": "Enviar código",
+      "sending": "Enviando...",
+      "verify": "Verificar",
+      "verifying": "Verificando..."
     }
   },
   "nav": {
     "home": "Inicio",
     "categories": "Categorías",
     "cart": "Carrito",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "theme": "Tema"
+  },
+  "common": {
+    "back": "Atrás"
+  },
+  "profile": {
+    "firstName": "Nombre de pila",
+    "guest": "Invitado",
+    "lastName": "Apellido",
+    "loggingOut": "Cerrando sesión...",
+    "logout": "Cerrar sesión",
+    "myOrders": "Mis pedidos",
+    "paymentMethods": "Métodos de pago",
+    "settings": "Ajustes",
+    "shippingAddress": "Dirección de envío",
+    "title": "Perfil"
+  },
+  "settings": {
+    "language": "Idioma",
+    "theme": "Tema",
+    "title": "Ajustes"
   }
 }

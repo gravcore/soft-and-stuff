@@ -7,6 +7,7 @@ import { authenticate } from "@/shared/middleware/auth.middleware";
 import passport from "../../auth.passport";
 import { env } from "@/config/env";
 import { AppError } from "@/shared/errors/AppError";
+import { generateCsrfToken } from "@/shared/middleware/csrf.middleware";
 
 const router = Router();
 
@@ -72,6 +73,10 @@ router.post('/logout', authenticate(), authControllerV1.logout);
  *       401: { description: Missing or invalid token }
  */
 router.get('/me', authenticate(), authControllerV1.me);
+
+router.get('/csrf-token', (req, res) => {
+    res.json({ token: generateCsrfToken(req, res) });
+});
 
 const ALLOWED_PROVIDERS = ['google'] as const; // whitelist
 type Provider = typeof ALLOWED_PROVIDERS[number];

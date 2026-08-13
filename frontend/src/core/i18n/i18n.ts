@@ -22,10 +22,13 @@ for (const path in localeModules) {
 // Get the language name with its code of each available language
 export function getAvailableLanguages(): { code: string; label: string }[] {
     const displayNames = new Intl.DisplayNames([i18n.language ?? 'en'], { type: 'language' });
-    return languageCodes.map((code) => ({
-        code,
-        label: displayNames.of(code) ?? code.toUpperCase(),
-    }));
+    return languageCodes.map((code) => {
+        const label = displayNames.of(code) ?? code.toUpperCase();
+        return { 
+            code,
+            label: label.charAt(0).toUpperCase() + label.slice(1), // Capitalize just the first letter
+        }
+    });
 }
 
 i18n

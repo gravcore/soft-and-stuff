@@ -8,6 +8,25 @@ export function Home() {
             <h1>Welcome - Home</h1>
             <p>Hi, {user ? user.firstName : 'person'}</p>
             { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
+            { user && <img src={user.avatarUrl ?? ''} alt={user.firstName} /> }
         </div>
     );
 }

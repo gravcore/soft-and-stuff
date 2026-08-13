@@ -1,6 +1,7 @@
 {
   "errors": {
-    "GENERIC": "Something went wrong. Please try again."
+    "GENERIC": "Something went wrong. Please try again.",
+    "INTERNAL_ERROR": "Something went wrong. Please try again."
   },
   "auth": {
     "common": {
@@ -93,6 +94,27 @@
     "home": "Home",
     "categories": "Categories",
     "cart": "Cart",
-    "profile": "Profile"
+    "profile": "Profile",
+    "theme": "Theme"
+  },
+  "profile": {
+    "title": "Profile",
+    "guest": "Guest",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "loggingOut": "Logging out...",
+    "logout": "Logout",
+    "myOrders": "My Orders",
+    "shippingAddress": "Shipping Address",
+    "paymentMethods": "Payment Methods",
+    "settings": "Settings"
+  },
+  "common": {
+    "back": "Back"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "language": "Language"
   }
 }

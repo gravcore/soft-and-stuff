@@ -8,11 +8,28 @@ const ForgotPasswordPage = lazy(() => import('@/features/auth/pages/ForgotPasswo
 const OAuthCallbackPage = lazy(() => import('@/features/auth/pages/OAuthCallbackPage/OAuthCallbackPage').then((m) => ({ default: m.OAuthCallbackPage })));
 const ProtectedRoute = lazy(() => import('@/shared/components/ProtectedRoute/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })));
 const Protected = lazy(() => import('@/shared/components/Protected/Protected').then((m) => ({ default: m.Protected })));
+const AppLayout = lazy(() => import('@/shared/components/AppLayout/AppLayout').then((m) => ({ default: m.AppLayout })));
+const ProfilePage = lazy(() => import('@/features/profile/pages/ProfilePage/ProfilePage').then((m) => ({ default: m.ProfilePage })));
+const ProfileDetailPage = lazy(() => import('@/features/profile/pages/ProfileDetailPage/ProfileDetailPage').then((m) => ({ default: m.ProfileDetailPage })));
+const SettingsPage = lazy(() => import('@/features/settings/pages/SettingsPage/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
 const router = createBrowserRouter([
-    { path: '/', element: <Home /> },
+    {
+        element: wrap(AppLayout),
+        children: [
+            { path: '/', element: wrap(Home) },
+            { path: '/settings', element: wrap(SettingsPage) },
+            { 
+                element: wrap(ProtectedRoute),
+                children: [
+                    { path: '/profile', element: wrap(ProfilePage) },
+                    { path: '/profile/details', element: wrap(ProfileDetailPage) },
+                ],
+            },
+        ],
+    },
     { 
         element: <ProtectedRoute />, 
         children: [

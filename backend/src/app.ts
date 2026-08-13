@@ -16,6 +16,7 @@ import mediaRoutesV1 from './modules/media/versions/v1/media.routes.v1';
 import cartRoutesV1 from './modules/cart/versions/v1/cart.routes.v1';
 import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from '@/config/swagger';
+import { doubleCsrfProtection } from './shared/middleware/csrf.middleware';
 
 export const createApp = () => {
     // Initialize Sentry to capture startup errors too
@@ -46,6 +47,14 @@ export const createApp = () => {
     app.use(express.json({ limit: '1mb' }));
     app.use(express.urlencoded({ extended: true })); // For compatibility with submissions as application/x-www-form-urlencoded
     app.use(cookieParser());
+
+    // === CSRF protection ===
+    app.use((req, res, next) => {
+        if (req.path === '/api/v1/payments/webhook') return next(); // skip
+        doubleCsrfProtection(req, res, next);
+    });
+    // === CSRF protection ===
+
     app.use(compression() as express.RequestHandler); // Compress the body response
     app.use(requestLogger);
     app.use('/api/', apiLimiter);
