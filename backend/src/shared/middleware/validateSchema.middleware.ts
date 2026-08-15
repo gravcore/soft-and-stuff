@@ -25,6 +25,14 @@ export const validateSchema =
         }
 
         // Change the request data to the stripped version (removes unknown fields)
-        (req as any)[target] = parsed.data;
+        if (target === 'query') {
+            Object.keys(req.query).forEach((key) => delete req.query[key]);
+            Object.assign(req.query, parsed.data as Record<string, unknown>);
+        } else if (target === 'body') {
+            req.body = parsed.data;
+        } else {
+            req.params = parsed.data as Record<string, string>;
+        }
+
         next();
     }

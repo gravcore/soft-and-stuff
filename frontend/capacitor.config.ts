@@ -1,8 +1,11 @@
 import type { CapacitorConfig } from '@capacitor/cli';
+import { loadEnv } from 'vite';
+
+const env = loadEnv('development', process.cwd(), 'VITE_');
 
 const config: CapacitorConfig = {
-  appId: 'com.gravcore.softandstuff',
-  appName: 'Soft and Stuff',
+  appId: env.VITE_APP_ID,
+  appName: env.VITE_BRAND_TITLE,
   webDir: 'dist',
   server: {
     // url: 'http://192.168.56.1:5173', // used for hot reload in development

@@ -95,6 +95,7 @@
     "categories": "Categories",
     "cart": "Cart",
     "profile": "Profile",
+    "login": "Login",
     "theme": "Theme"
   },
   "profile": {
@@ -110,11 +111,36 @@
     "settings": "Settings"
   },
   "common": {
-    "back": "Back"
+    "back": "Back",
+    "brandTitle": "Soft&Stuff",
+    "brandSubtitle": "Everything, in one place"
   },
   "settings": {
     "title": "Settings",
     "theme": "Theme",
     "language": "Language"
+  },
+  "products": {
+    "sale": "Sale",
+    "notFound": "No products found."
+  },
+  "home": {
+    "heroTitle": "Everything, in one place",
+    "heroSubtitleWelcome": "Welcome back, {{name}}",
+    "heroSubtitle": "Quality products, delivered fast",
+    "shopAll": "Shop all products",
+    "featured": "Featured",
+    "viewAll": "View all"
+  },
+  "footer": {
+    "tagline": "Everything, in one place",
+    "shop": "Shop",
+    "support": "Support",
+    "contact": "Contact",
+    "returns": "Returns",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "rights": "All rights reserved."
   }
 }

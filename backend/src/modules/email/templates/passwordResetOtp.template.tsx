@@ -1,3 +1,4 @@
+import { env } from '@/config/env';
 import { Html, Head, Body, Container, Heading, Text, Section } from '@react-email/components';
 
 interface PasswordResetOtpEmailProps { otp: string, ttlMinutes: number; }
@@ -20,7 +21,7 @@ export const PasswordResetOtpEmail = ({ otp, ttlMinutes }: PasswordResetOtpEmail
                         🛍️
                     </Section>
                     <Heading as='h1' style={{ color: '#ffffff', fontSize: '20px', margin: 0 }}>
-                        Soft&Stuff
+                        {env.BRAND_TITLE}
                     </Heading>
                 </Section>
 

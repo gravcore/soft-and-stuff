@@ -51,6 +51,9 @@ const schema = z.object({
     BCRYPT_ROUNDS: z.coerce.number().default(12),
     RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900_000), // 15 minutes
     RATE_LIMIT_MAX: z.coerce.number().default(100),
+
+    BRAND_TITLE: z.string(),
+    BRAND_SUBTITLE: z.string(),
 });
 
 // safeParse validates without throwing errors

@@ -1,10 +1,11 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import { env } from './env';
 
 const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Soft And Stuff API',
+            title: `${env.BRAND_TITLE} API`,
             version: '1.0.0',
             description: 'E-commerce backend'
         },

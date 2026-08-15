@@ -21,7 +21,7 @@ export function ProfilePage() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 8 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
-            className="mx-auto max-w-md px-4 pb-24 pt-6 md:pb-6"
+            className="mx-auto max-w-md px-4 pb-24 pt-6 md:pb-6 md:pt-20"
         >
             <h1 className="mb-6 text-lg font-semibold text-ink">
                 {t('profile.title')}

@@ -15,7 +15,7 @@ export function SettingsPage() {
             initial={{ opacity: 0, x: 16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.25 }}
-            className="mx-auto max-w-md px-4 pb-24 pt-6 md:pb-6"
+            className="mx-auto max-w-md px-4 pb-24 pt-6 md:pb-6 md:pt-22"
         >
             {canGoBack && (
                 <button 
