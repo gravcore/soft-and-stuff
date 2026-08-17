@@ -122,7 +122,13 @@
   },
   "products": {
     "sale": "Sale",
-    "notFound": "No products found."
+    "notFound": "No products found.",
+    "title": "Products",
+    "filters": "Filters",
+    "searchPlaceholder": "Search products...",
+    "all": "All",
+    "category": "Category",
+    "priceRange": "Price range"
   },
   "home": {
     "heroTitle": "Everything, in one place",
@@ -142,5 +148,13 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "rights": "All rights reserved."
+  },
+  "sort": {
+    "newest": "Newest",
+    "priceAsc": "Price: Low to High",
+    "priceDesc": "Price: High to Low",
+    "popular": "Most Popular",
+    "labelWithCount": "Sort · {{count}}",
+    "label": "Sort"
   }
 }

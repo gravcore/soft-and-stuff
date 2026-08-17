@@ -53,6 +53,31 @@ body {
   transition: background 0.2s ease, color 0.2s ease;
 }
 
+.range-thumb {
+    pointer-events: none;
+}
+
+.range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    cursor: pointer;
+}
+
+.range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    cursor: pointer;
+}
+
 @import "tailwindcss";
 
 @custom-variant hover (&:hover);

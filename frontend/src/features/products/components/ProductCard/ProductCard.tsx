@@ -4,9 +4,7 @@ import { Heart } from 'lucide-react';
 import type { Product } from '../../types/product.types';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
-const formatPrice = (cents: number) => 
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100);
+import { formatPrice } from '../../utils/formatPrice';
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
     const [imgLoaded, setImgLoaded] = useState(false);

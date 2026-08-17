@@ -12,6 +12,7 @@ const AppLayout = lazy(() => import('@/shared/components/AppLayout/AppLayout').t
 const ProfilePage = lazy(() => import('@/features/profile/pages/ProfilePage/ProfilePage').then((m) => ({ default: m.ProfilePage })));
 const ProfileDetailPage = lazy(() => import('@/features/profile/pages/ProfileDetailPage/ProfileDetailPage').then((m) => ({ default: m.ProfileDetailPage })));
 const SettingsPage = lazy(() => import('@/features/settings/pages/SettingsPage/SettingsPage').then((m) => ({ default: m.SettingsPage })));
+const ProductListPage = lazy(() => import('@/features/products/pages/ProductListPage/ProductListPage').then((m) => ({ default: m.ProductListPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
         element: wrap(AppLayout),
         children: [
             { path: '/', element: wrap(Home) },
+            { path: '/products', element: wrap(ProductListPage) },
             { path: '/settings', element: wrap(SettingsPage) },
             { 
                 element: wrap(ProtectedRoute),
