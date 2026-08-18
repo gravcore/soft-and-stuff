@@ -19,12 +19,9 @@ export function SortDropdown({ sort, onChange, sortOptions }: { sort: string[]; 
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    function toggleOption(value: string) {
-        // Already selected, remove it
-        if (sort.includes(value)) onChange(sort.filter((v) => v !== value));
-
-        // Not selected yet, add it
-        else onChange([...sort, value]);
+    function selectOption(value: string) {
+        onChange([value]);
+        setOpen(false);
     }
 
     return (
@@ -34,7 +31,7 @@ export function SortDropdown({ sort, onChange, sortOptions }: { sort: string[]; 
                 onClick={() => setOpen((prev) => !prev)}
                 className="flex items-center gap-2 rounded-full border border-border bg-surface-2 px-4 py-2 text-sm text-ink transition-colors hover:border-accent/50"
             >
-                <span>{sort.length > 0 ? t('sort.labelWithCount', { count: sort.length }) : t('sort.label')}</span>
+                <span>{sortOptions.find((opt) => opt.value === sort[0])?.label ?? t('sort.label')}</span>
 
                 <motion.span
                     animate={{ rotate: open ? 180 : 0 }}
@@ -61,7 +58,7 @@ export function SortDropdown({ sort, onChange, sortOptions }: { sort: string[]; 
                                 <button 
                                     key={opt.value}
                                     type="button"
-                                    onClick={() => toggleOption(opt.value)}
+                                    onClick={() => selectOption(opt.value)}
                                     className="flex w-full items-center justify-between px-4 py-2.5
                                     text-left text-sm text-ink transition-colors hover:bg-surface-2"
                                 >

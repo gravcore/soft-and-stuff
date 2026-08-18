@@ -128,7 +128,9 @@
     "searchPlaceholder": "Search products...",
     "all": "All",
     "category": "Category",
-    "priceRange": "Price range"
+    "priceRange": "Price range",
+    "priceMin": "Min",
+    "priceMax": "Max"
   },
   "home": {
     "heroTitle": "Everything, in one place",
