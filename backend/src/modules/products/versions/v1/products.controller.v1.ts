@@ -35,7 +35,31 @@ export const productsControllerV1 = {
         } catch (err) { next(err); };
     },
 
+    async searchCategories(req: Request, res: Response, next: NextFunction) {
+        try {
+            sendSuccess(res, { 
+                categories: await productsService.searchCategories(
+                    (req.query.q as string) ?? '') 
+            });
+        } catch (err) { next(err); }
+    },
+
     // -- Admin-only actions below --
+
+    async getOrCreateCategory(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const { name } = req.body;
+            const category = await productsService.getOrCreateCategory(name);
+            sendSuccess(res, { category }, 201);
+        } catch (err) { next(err); }
+    },
+
+    async getById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const product = await productsService.getById(req.params.id as string);
+            sendSuccess(res, { product });
+        } catch (err) { next(err); };
+    },
 
     async create(req: AuthRequest, res: Response, next: NextFunction) {
         try {

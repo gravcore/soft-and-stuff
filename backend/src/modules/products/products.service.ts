@@ -30,12 +30,47 @@ export const productsService = {
         return product;
     },
 
+    async getById(id: string) {
+        const product = await productsRepository.findByIdWithCategory(id);
+        if (!product) throw new AppError('Product not found', 404, 'PRODUCT_NOT_FOUND');
+        return product;
+    },
+
     async getCategories() {
         return productsRepository.findCategories();
     },
 
+    async getUniqueSlug(name: string, table: 'products' | 'categories'): Promise<string> {
+        const base = slugify(name);
+        let candidate = base;
+        let suffix = 2;
+
+        while (await productsRepository.slugExists(table, candidate)) {
+            candidate = `${base}-${suffix}`;
+            suffix++;
+        }
+
+        return candidate;
+    },
+
+    async getOrCreateCategory(name: string) {
+        const displayName = name.trim().replace(/\s+/g, ' ');
+        const normalized = displayName.toLowerCase();
+
+        const existing = await productsRepository.findCategoryByName(normalized);
+        if (existing) return existing;
+        
+        return productsRepository.createCategory(displayName, await this.getUniqueSlug(displayName, 'categories'));
+    },
+
+    async searchCategories(query: string) {
+        const trimmed = query.trim();
+        if (trimmed.length === 0) return [];
+        return productsRepository.searchCategories(trimmed);
+    },
+
     async create(input: CreateProductInput) {
-        const slug = slugify(input.productName);
+        const slug = await this.getUniqueSlug(input.productName, 'products');
         return productsRepository.create({ ...input, slug });
     },
 

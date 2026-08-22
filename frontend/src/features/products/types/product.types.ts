@@ -1,6 +1,8 @@
 export interface Product {
     id: string;
     categoryId: string | null;
+    categoryName: string | null;
+    categoryImageUrl: string | null;
     productName: string;
     slug: string;
     description: string | null;
@@ -8,6 +10,7 @@ export interface Product {
     comparePrice: number | null;
     sku: string | null;
     stock: number;
+    isActive: boolean;
     isFeatured: boolean;
     imagesUrl: string[];
     videosUrl: string[];

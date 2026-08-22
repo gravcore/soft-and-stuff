@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDebounce } from '@/shared/hooks/useDebounce';
-import { formatPrice } from '../../utils/formatPrice';
 import { useTranslation } from 'react-i18next';
+import { PriceInput } from '../PriceInput/PriceInput';
 
 interface PriceRangeFilterProps {
     min: number;
@@ -71,8 +71,8 @@ export function PriceRangeFilter({ min, max, value, onChange }: PriceRangeFilter
             {/* Editable number boxes */}
             <div className="mb-4 flex items-center gap-2">
 
-                <PriceInput label={t('products.priceMin', 'Min')} value={local[0]} onCommit={handleMinChange} />
-                <PriceInput label={t('products.priceMax', 'Max')} value={local[1]} onCommit={handleMaxChange} />
+                <PriceInput label={t('products.priceMin', 'Min')} valueInDollars={local[0]} onCommit={handleMinChange} />
+                <PriceInput label={t('products.priceMax', 'Max')} valueInDollars={local[1]} onCommit={handleMaxChange} />
 
             </div>
 
@@ -104,44 +104,6 @@ export function PriceRangeFilter({ min, max, value, onChange }: PriceRangeFilter
                     onChange={(e) => handleMaxChange(Number(e.target.value))}
                     className="range-thumb pointer-events-none absolute inset-0 w-full
                     appearance-none bg-transparent"
-                />
-            </div>
-        </div>
-    );
-}
-
-function PriceInput({ label, value, onCommit }: { label: string; value: number; onCommit: (v: number) => void }) {
-    const [focused, setFocused] = useState(false);
-    const [rawText, setRawText] = useState(String(value));
-
-    const { symbol, amount } = formatPrice(value, false); // not in cents
-
-    function commit() {
-        const parsed = Number(rawText);
-        onCommit(Number.isFinite(parsed) ? parsed : value);
-    }
-
-    return (
-        <div className="flex-1 rounded-lg border border-border bg-surface-2 px-2.5 py-1.5">
-            <label className="mb-0.5 block text-[0.6875rem] text-muted">{label}</label>
-
-            <div className="flex items-baseline gap-0.5 text-sm text-ink">
-                <span>{symbol}</span>
-
-                <input 
-                    type="text"
-                    inputMode="decimal"
-                    value={focused ? rawText : amount}
-                    onFocus={() => { setFocused(true); setRawText(String(value)); }}
-                    onChange={(e) => setRawText(e.target.value.replace(/[^0-9.]/g, ''))}
-                    onBlur={() => { setFocused(false); commit(); }}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                            commit();
-                            e.currentTarget.blur();
-                        }
-                    }}
-                    className="w-full bg-transparent outline-none"
                 />
             </div>
         </div>

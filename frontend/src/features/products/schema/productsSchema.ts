@@ -60,12 +60,6 @@ export const productFiltersSchema = z.object({
     sort: z.enum([ 'price_asc', 'price_desc', 'newest', 'popular' ]).optional(),
 });
 
-export const createCategorySchema = z.object({
-    name: z.string()
-           .min(1, schemaError('CATEGORY_NAME_TOO_SHORT', 'Category name too short'))
-           .max(100),
-});
-
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type ProductFiltersInput = z.infer<typeof productFiltersSchema>;

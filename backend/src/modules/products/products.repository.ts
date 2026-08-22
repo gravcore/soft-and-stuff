@@ -130,6 +130,54 @@ export const productsRepository = {
         );
         return rows[0] ?? null;
     },
+
+    async findCategoryByName(normalized: string) {
+        const { rows } = await db.query(
+            `SELECT id, category_name AS name, slug, image_url
+            FROM categories WHERE LOWER(TRIM(category_name)) = $1 LIMIT 1`,
+            [normalized]
+        );
+        return rows[0] ?? null;
+    },
+
+    async searchCategories(query: string, limit = 10) {
+        const { rows } = await db.query(
+            `SELECT id, category_name AS name, slug, image_url
+            FROM categories
+            WHERE category_name ILIKE $1
+            ORDER BY CASE WHEN category_name ILIKE $2 THEN 0 ELSE 1 END,
+            category_name ASC
+            LIMIT $3`,
+            [`%${query}%`, `${query}%`, limit]
+        );
+        return rows;
+    },
+
+    async findByIdWithCategory(id: string): Promise<(ProductRow & { category_name: string | null; category_image_url: string | null }) | null> {
+        const { rows } = await db.query(
+            `SELECT p.*, c.category_name, c.image_url AS category_image_url
+            FROM products p
+            LEFT JOIN categories c ON c.id = p.category_id
+            WHERE p.id = $1 LIMIT 1`,
+            [id]
+        ); 
+        return rows[0] ?? null;
+    },
+
+    async createCategory(name: string, slug: string) {
+        const { rows } = await db.query(
+            `INSERT INTO categories (category_name, slug)
+            VALUES ($1, $2)
+            RETURNING id, category_name AS name, slug, image_url`,
+            [name, slug]
+        );
+        return rows[0];
+    },
+
+    async slugExists(table: 'products' | 'categories', slug: string): Promise<boolean> {
+        const { rows } = await db.query(`SELECT 1 FROM ${table} WHERE slug = $1 LIMIT 1`, [slug]);
+        return rows.length > 0;
+    },
      
     async create(input: CreateProductParams): Promise<ProductRow> {
         const { rows } = await db.query<ProductRow>(

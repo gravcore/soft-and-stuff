@@ -17,13 +17,14 @@ interface FormFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
     // extends -> FormFieldProps inherits ALL of those input props automatically, then adds label/icon/error on top - so this component accepts everything a real <input> would, plus our 3 custom ones
     
     label: string;
+    featureError?: string;
     icon: LucideIcon;
     error?: ZodFieldError;
 }
 
 // forwardRef function wrapper to inject ref through the component, mandatory to pass ref
 export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
-    ({ label, icon: Icon, error, type, ...inputProps }, ref) => {
+    ({ label, featureError = 'auth', icon: Icon, error, type, ...inputProps }, ref) => {
         const { t } = useTranslation();
 
         const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +51,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
                 )}
             </span>
 
-            {error && <span className={styles.fieldError}>{t(`auth.errors.${error.params?.code}`, error.message ?? '')}</span>}
+            {error && <span className={styles.fieldError}>{t(`${featureError}.errors.${error.params?.code}`, error.message ?? '')}</span>}
         </label>)
 });
 
