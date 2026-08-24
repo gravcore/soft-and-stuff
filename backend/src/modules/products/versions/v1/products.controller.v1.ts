@@ -81,4 +81,11 @@ export const productsControllerV1 = {
             sendSuccess(res, { message: 'Product deleted' });
         } catch (err) { next(err); };
     },
+
+    async bulkCreate(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const results = await productsService.bulkCreate(req.body.products);
+            sendSuccess(res, { results }, 201);            
+        } catch (err) { next(err); };
+    },
 };

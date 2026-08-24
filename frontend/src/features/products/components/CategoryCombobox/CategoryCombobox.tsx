@@ -63,7 +63,7 @@ export function CategoryCombobox({ value, initialName, initialImageUrl, onChange
     }
 
     return (
-        <div ref={containerRef} className="realtive">
+        <div ref={containerRef} className="relative">
 
             {/* Trigger button, shows either category name or a placeholder */}
             <button
@@ -111,13 +111,13 @@ export function CategoryCombobox({ value, initialName, initialImageUrl, onChange
                             <Search size={14} className="absolute left-4 top-1/2
                             -translate-y-1/2 text-muted" />
 
-                            <input 
+                            <input
                                 autoFocus
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder={t('products.admin.searchCategory', 'Search or type a new category...')}
-                                className="w-full rounded-lg bg-transparent py-1.5 pl-6 pr-2 text-sm
+                                className="w-full rounded-lg bg-transparent py-1.5 pl-8 pr-2 text-sm
                                 text-ink outline-none"
                             />
 

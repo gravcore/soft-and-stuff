@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { validateSchema } from '@/shared/middleware/validateSchema.middleware';
-import { createProductSchema, updateProductSchema, productFiltersSchema, createCategorySchema } from '../../products.schema';
+import { createProductSchema, updateProductSchema, productFiltersSchema, createCategorySchema, bulkProductRowSchema } from '../../products.schema';
 import { productsControllerV1 } from './products.controller.v1';
 import { authenticate, authorize } from '@/shared/middleware/auth.middleware';
+import z from 'zod';
 
 const router = Router();
 
@@ -37,5 +38,15 @@ router.post('/',        ...adminGuard, validateSchema(createProductSchema), prod
 router.patch('/:id',    ...adminGuard, validateSchema(updateProductSchema), productsControllerV1.update);
 router.delete('/:id',   ...adminGuard, productsControllerV1.remove);
 router.post('/categories', ...adminGuard, validateSchema(createCategorySchema), productsControllerV1.getOrCreateCategory);
+
+/**
+ * @swagger
+ * /products/bulk:
+ *   post:
+ *     summary: Bulk-create products from parsed CSV rows (admin-only)
+ *     tags: [Products]
+ *     security: [{ bearerAuth: [] }]
+ */
+router.post('/bulk', ...adminGuard, validateSchema(z.array(bulkProductRowSchema)), productsControllerV1.bulkCreate);
 
 export default router;

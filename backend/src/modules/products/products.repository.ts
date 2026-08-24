@@ -1,6 +1,9 @@
 import { PaginationParams } from "@/shared/types";
 import { ProductFilters } from "./products.types";
 import { db } from "@/config/database";
+import { productsService } from "./products.service";
+import { BulkProductRowInput } from "./products.schema";
+import { PoolClient } from "pg";
 
 interface ProductRow {
     id:                     string;
@@ -255,4 +258,97 @@ export const productsRepository = {
         );
         return rows;
     },
+
+    async resolveCategoriesByName(names: string[]): Promise<Map<string, string>> {
+        
+        const trimmed = names.map((n) => n.trim());
+
+        const lowerToOriginal = new Map<string, string>();
+
+        for (const name of trimmed) {
+            const lower = name.toLowerCase();
+            
+            // Avoid duplicates
+            if (!lowerToOriginal.has(lower)) lowerToOriginal.set(lower, name);
+        }
+        const uniqueLowerNames = [...lowerToOriginal.keys()];
+        
+        // Find every category already exists
+        const { rows: existing } = await db.query(
+            `SELECT id, category_name AS name FROM categories
+            WHERE LOWER(category_name) = ANY($1)`,
+            [uniqueLowerNames]
+        );
+
+        // Build a quick lookup table
+        const nameToId = new Map<string, string>(existing.map((c) => [c.name.toLowerCase(), c.id] as const));
+
+        // No found needs to be created
+        const missingLowerNames = uniqueLowerNames.filter((n) => !nameToId.has(n));
+
+        if (missingLowerNames.length > 0) {
+            const values = missingLowerNames.map((_, i) => `($${i * 2 + 1}, $${i * 2 + 2})`).join(', ');
+        
+            const missingWithSlugs: { name: string; slug: string }[] = [];
+
+            for (const lower of missingLowerNames) {
+                const original = lowerToOriginal.get(lower)!;
+                const slug = await productsService.getUniqueSlug(original, 'categories');
+                missingWithSlugs.push({ name: original, slug });
+            }
+
+            const params = missingWithSlugs.flatMap((c) => [c.name, c.slug]);
+
+            const { rows: created } = await db.query(
+                `INSERT INTO categories (category_name, slug) 
+                 VALUES ${values}
+                 RETURNING id, category_name AS name`,
+                 params
+            );
+
+            // Add the newly-created ones into the same lookup
+            created.forEach((c) => nameToId.set(c.name.toLowerCase(), c.id));
+        }
+
+        return nameToId;
+    },
+
+    // Attempts to insert many products in one query
+    async bulkInsertProducts(products: (BulkProductRowInput & { categoryId: string })[], client: PoolClient) {
+        const cols = [
+            `category_id`, 'product_name', 'product_description', 'slug', 'sku',
+            'price_in_cents', 'compare_price', 'stock', 'is_active', 'is_featured', 'images_url',
+            'videos_url', 'metadata',
+        ];
+
+        // Build "($1,$2,...), ($11,$12,...)..." one group of placeholders per product
+        const values = products
+            .map((_, i) => `(${cols.map((_, j) => `$${i * cols.length + j + 1}`).join(', ')})`)
+            .join(', ');
+
+        const params = products.flatMap((p) => [
+            p.categoryId,
+            p.productName,
+            p.productDescription ?? null,
+            p.slug,
+            p.sku,
+            p.priceInCents,
+            p.comparePrice ?? null,
+            p.stock,
+            p.isActive,
+            p.isFeatured,
+            JSON.stringify(p.imagesUrl ?? []),
+            JSON.stringify(p.videosUrl ?? []),
+            JSON.stringify(p.metadata ?? {}),
+        ]);
+
+        const { rows } = await client.query(
+            `INSERT INTO products (${cols.join(', ')}) 
+             VALUES ${values}
+             RETURNING id`,
+             params
+        );
+
+        return rows as { id: string }[];
+    }
 };

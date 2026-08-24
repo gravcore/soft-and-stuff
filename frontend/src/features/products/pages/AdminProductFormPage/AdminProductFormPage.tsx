@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useForm, type Resolver } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@/shared/utils/zodResolverWithCode";
 import { X, ImagePlus, Save, Video, Tag, Hash, FileText, Boxes } from 'lucide-react';
 import { useProductById } from "../../hooks/useProducts";
 import { useCreateProduct, useUpdateProduct } from "../../hooks/useProductMutations";
@@ -45,6 +45,7 @@ export function AdminProductFormPage() {
             videosUrl: existing.videosUrl,
             metadata: existing.metadata ?? {},
         } : undefined,
+        mode: 'onBlur',
     });
 
     const mutation = isEdit ? updateProduct : createProduct;
@@ -154,7 +155,7 @@ export function AdminProductFormPage() {
         <div className="mx-auto max-w-lg px-4 pb-24 pt-6 md:pt-16">
 
             {/* Header */}
-            <div className="mb-6 items-center justify-between">
+            <div className="mb-6 flex items-center justify-between">
 
                 <h1 className="text-xl font-semibold tex-ink">
                     {isEdit 
@@ -165,9 +166,9 @@ export function AdminProductFormPage() {
 
                 <button
                     onClick={() => navigate('/admin/products')}
-                    className="text-muted hover:text-ink"
+                    className="text-muted hover:text-ink hover:cursor-pointer"
                 >
-                    <X size={20} />
+                    <X size={25} />
                 </button>
             </div>
 
@@ -188,7 +189,7 @@ export function AdminProductFormPage() {
                         ))}
 
                         {/* Upload button */}
-                        <label className="flex-h-20 w-20 cursor-pointer flex-col items-center justify-center
+                        <label className="flex h-20 w-20 cursor-pointer flex-col items-center justify-center
                          gap-1 rounded-xl border-2 border-dashed border-border text-muted
                          hover:border-accent/50 hover:text-ink">
 
@@ -273,6 +274,7 @@ export function AdminProductFormPage() {
                 <FormField
                     label={t('products.admin.name', 'Product Name')}
                     icon={Tag} placeholder={t('products.admin.namePlaceholder', 'e.g. AirPods Pro')}
+                    featureError="products.admin"
                     error={errors.productName} {...register('productName')}
                 />
 
@@ -280,6 +282,7 @@ export function AdminProductFormPage() {
                 <FormField 
                     label={t('products.admin.slug', 'Slug')}
                     icon={Hash} placeholder={t('products.admin.slugPlaceholder', 'e.g. airpods-pro')}
+                    featureError="products.admin"
                     error={errors.slug} {...register('slug')}
                 />
 
@@ -287,6 +290,7 @@ export function AdminProductFormPage() {
                 <FormField 
                     label={t('products.admin.sku', 'SKU')}
                     icon={FileText} placeholder={t('products.admin.skuPlaceholder', 'e.g. APP-2ND-GEN')}
+                    featureError="products.admin"
                     error={errors.sku} {...register('sku')}
                 />
 
@@ -304,7 +308,7 @@ export function AdminProductFormPage() {
                     )}
                 />
                 {errors.categoryId && <span className="text-xs text-danger">
-                        {t(`products.admin.errors.${(errors.categoryId as ZodFieldError).params?.code}`, errors.categoryId.message ?? '')}
+                        {t(`products.admin.errors.${(errors.categoryId as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.categoryId as ZodFieldError).params?.code} ${errors.categoryId.message ?? ''}`)}
                     </span>}
 
                 {/* Pricing */}
@@ -332,16 +336,22 @@ export function AdminProductFormPage() {
                         )}
                     />
                 </div>
-                {errors.priceInCents && <span className="text-xs text-danger">{t(`products.admin.errors.${(errors.priceInCents as ZodFieldError).params?.code}`, errors.priceInCents.message ?? '')}</span>}
-                {errors.comparePrice && <span className="text-xs text-danger">{t(`products.admin.errors.${(errors.comparePrice as ZodFieldError).params?.code}`, errors.comparePrice.message ?? '')}</span>}
+                {errors.priceInCents && <span className="text-xs text-danger">{t(`products.admin.errors.${(errors.priceInCents as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.priceInCents as ZodFieldError).params?.code} ${errors.priceInCents.message ?? ''}`)}</span>}
+                {errors.comparePrice && <span className="text-xs text-danger">{t(`products.admin.errors.${(errors.comparePrice as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.comparePrice as ZodFieldError).params?.code} ${errors.comparePrice.message ?? ''}`)}</span>}
 
                 {/* Stock quantity */}
                 <FormField 
                     label={t('products.admin.stock', 'Stock')}
                     icon={Boxes}
                     type="number"
+                    step="1"
+                    min="0"
                     placeholder="0"
+                    featureError="products.admin"
                     error={errors.stock}
+                    onKeyDown={(e) => {
+                        if (['-', '.', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
+                    }}
                     {...register('stock')}
                 />
 
@@ -360,7 +370,7 @@ export function AdminProductFormPage() {
                     />
 
                     {errors.productDescription && <span className="text-xs text-danger">
-                        {t(`products.admin.errors.${(errors.productDescription as ZodFieldError).params?.code}`, errors.productDescription.message ?? '')}
+                        {t(`products.admin.errors.${(errors.productDescription as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.productDescription as ZodFieldError).params?.code} ${errors.productDescription.message ?? ''}`)}
                     </span>}
                 </label>
 
@@ -403,7 +413,7 @@ export function AdminProductFormPage() {
                     type="submit"
                     disabled={mutation.isPending}
                     className="flex w-full items-center justify-center gap-2 rounded-full bg-accent
-                    py-3.5 text-sm font-semibold text-white disabled:opacity-60"
+                    py-3.5 text-sm font-semibold text-white hover:cursor-pointer disabled:opacity-60"
                 >
                     <Save size={16} />
 

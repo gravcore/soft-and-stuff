@@ -95,10 +95,13 @@
     "categories": "Categorías",
     "cart": "Carrito",
     "profile": "Perfil",
-    "theme": "Tema"
+    "theme": "Tema",
+    "login": "Acceso"
   },
   "common": {
-    "back": "Atrás"
+    "back": "Atrás",
+    "brandSubtitle": "Todo, en un solo lugar",
+    "brandTitle": "Suave"
   },
   "profile": {
     "firstName": "Nombre de pila",
@@ -116,5 +119,94 @@
     "language": "Idioma",
     "theme": "Tema",
     "title": "Ajustes"
+  },
+  "footer": {
+    "contact": "Contacto",
+    "legal": "Legal",
+    "privacy": "política de privacidad",
+    "returns": "Devoluciones",
+    "rights": "Reservados todos los derechos.",
+    "shop": "Comercio",
+    "support": "Apoyo",
+    "tagline": "Todo, en un solo lugar",
+    "terms": "Términos de servicio"
+  },
+  "home": {
+    "featured": "Presentado",
+    "heroSubtitle": "Productos de calidad, entregados rápidamente.",
+    "heroSubtitleWelcome": "Bienvenido de nuevo, {{name}}",
+    "heroTitle": "Todo, en un solo lugar",
+    "shopAll": "Comprar todos los productos",
+    "viewAll": "Ver todo"
+  },
+  "products": {
+    "addToCart": "añadir a la cesta",
+    "admin": {
+      "active": "Activo (visible para los clientes)",
+      "addTitle": "Agregar producto",
+      "comparePrice": "Comparar precio",
+      "createCategory": "Crear {{name}}",
+      "creatingCategory": "Creando...",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe las características y detalles del producto...",
+      "editTitle": "Editar producto",
+      "errors": {
+        "FILE_TOO_LARGE": "Archivo demasiado grande"
+      },
+      "featured": "Presentado",
+      "images": "Imágenes del producto",
+      "name": "Nombre del producto",
+      "namePlaceholder": "p.ej. \nAirPods Pro",
+      "noCategories": "No se encontraron categorías",
+      "price": "Precio",
+      "save": "Guardar producto",
+      "saving": "Ahorro...",
+      "searchCategory": "Busque o escriba una nueva categoría...",
+      "searching": "Búsqueda...",
+      "selectCategory": "Selecciona una categoría",
+      "sku": "SKU",
+      "skuPlaceholder": "p.ej. \nAPLICACIÓN-2ND-GEN",
+      "slug": "Babosa",
+      "slugPlaceholder": "p.ej. \nairpods-pro",
+      "stock": "Existencias",
+      "upload": "Subir",
+      "uploadFail": "{{name}}: {{error}}",
+      "uploadFailedGeneric": "Error al subir",
+      "uploadingCount": "{{count}} subiendo...",
+      "videos": "Vídeos de productos"
+    },
+    "all": "Todo",
+    "cancel": "Cancelar",
+    "category": "Categoría",
+    "color": "Color",
+    "delete": "Borrar",
+    "deleteThisProduct": "¿Eliminar este producto?",
+    "filters": "Filtros",
+    "inStock": "En stock",
+    "lowStock": "Sólo queda {{stock}}",
+    "noSku": "Sin SKU",
+    "notFound": "No se encontraron productos.",
+    "outOfStock": "Agotado",
+    "priceMax": "máx.",
+    "priceMin": "mín.",
+    "priceRange": "Gama de precios",
+    "sale": "Venta",
+    "searchPlaceholder": "Buscar productos...",
+    "stock": "{{stock}} en stock",
+    "thisCantBeUndoneFromHere": "Esto se puede deshacer desde aquí.",
+    "title": "Productos"
+  },
+  "sort": {
+    "label": "Clasificar",
+    "labelWithCount": "Ordenar · {{count}}",
+    "newest": "El más nuevo",
+    "popular": "Más Popular",
+    "priceAsc": "Precio: de menor a mayor",
+    "priceDesc": "Precio: de mayor a menor"
+  },
+  "theme": {
+    "dark": "Oscuro",
+    "light": "Claro",
+    "system": "Sistema"
   }
 }

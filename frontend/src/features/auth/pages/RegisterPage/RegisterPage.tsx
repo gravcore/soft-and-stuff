@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@/shared/utils/zodResolverWithCode';
 import { useRegister } from '../../hooks/useRegister';
 import { useNavigate, Link } from 'react-router-dom';
 import { Package, Mail, Lock, User, ShoppingBag } from 'lucide-react';
