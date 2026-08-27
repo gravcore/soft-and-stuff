@@ -18,6 +18,7 @@ const ProductListPage = lazy(() => import('@/features/products/pages/ProductList
 const ProductDetailPage = lazy(() => import('@/features/products/pages/ProductDetailPage/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })));
 const AdminProductListPage = lazy(() => import('@/features/products/pages/AdminProductListPage/AdminProductListPage').then((m) => ({ default: m.AdminProductListPage })));
 const AdminProductFormPage = lazy(() => import('@/features/products/pages/AdminProductFormPage/AdminProductFormPage').then((m) => ({ default: m.AdminProductFormPage })));
+const AdminBulkUploadPage = lazy(() => import('@/features/products/pages/AdminBulkUploadPage/AdminBulkUploadPage').then((m) => ({ default: m.AdminBulkUploadPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
                         children: [
                             { path: '/admin/products', element: wrap(AdminProductListPage) },
                             { path: '/admin/products/new', element: wrap(AdminProductFormPage) },
+                            { path: '/admin/products/bulk-upload', element: wrap(AdminBulkUploadPage) },
                             { path: '/admin/products/:id/edit', element: wrap(AdminProductFormPage) },
                         ],
                     },

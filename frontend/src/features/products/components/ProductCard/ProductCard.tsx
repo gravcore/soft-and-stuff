@@ -19,15 +19,20 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.3) }}
             className="group relative"
         >
-            <Link to={`/products/${product.slug}`} className="block">
-                <div className="relative aspect-aquare overflow-hidden rounded-xl bg-surface-2">
+            <Link 
+                to={`/products/${product.slug}`}
+                className="block"
+                viewTransition
+            >
+                <div className="relative aspect-square overflow-hidden rounded-xl bg-surface-2">
                     {!imgLoaded && <div className="absolute inset-0 animate-pulse bg-surface-2" />}
                     <img 
                         src={product.imagesUrl[0]}
                         alt={product.productName}
+                        style={{ viewTransitionName: `product-image-${product.id}` }}
                         loading="lazy"
                         onLoad={() => setImgLoaded(true)}
-                        className={`h-full w-full object-cover transition-transform duration-500
+                        className={`h-full w-full object-cover rounded-xl transition-transform duration-500
                             group-hover:scale-105 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
                     />
                     {onSale && (
@@ -48,8 +53,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                         {product.productName}
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-ink">{formatPrice(product.priceInCents)}</span>
-                        {onSale && <span className="text-xs text-muted line-through">{formatPrice(product.comparePrice!)}</span> }
+                        <span className="text-sm font-semibold text-ink">{formatPrice(product.priceInCents).full}</span>
+                        {onSale && <span className="text-xs text-muted line-through">{formatPrice(product.comparePrice!).full}</span> }
                     </div>
                 </div>
             </Link>

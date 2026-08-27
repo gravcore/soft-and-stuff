@@ -1,11 +1,10 @@
 import { motion, useScroll, useTransform } from 'motion/react';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuthContext } from '@/core/auth/AuthContext';
 import { useProducts, useCategories } from '@/features/products/hooks/useProducts';
-import { ProductCard } from '@/features/products/components/ProductCard/ProductCard';
 import { ProductGrid } from '@/features/products/components/ProductGrid/ProductGrid';
 
 export function Home() {
@@ -17,8 +16,25 @@ export function Home() {
     const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
     const heroY = useTransform(scrollYProgress, [0, 1], [0, 80]);
 
-    const { data: featured, isLoading: loadingFeatured } = useProducts({ featured: true, limit: 4 });
+    const { data: featured, isLoading: loadingFeatured } = useProducts({ featured: true, limit: 48 });
     const { data: categories } = useCategories();
+
+    const categoriesRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = categoriesRef.current;
+        if (!el) return;
+
+        function onWheel(e: WheelEvent) {
+            if (e.deltaY === 0) return;
+
+            e.preventDefault();
+            el?.scrollBy({ left: e.deltaY, behavior: 'auto' });
+        }
+
+        el.addEventListener('wheel', onWheel, { passive: false });
+        return () => el.removeEventListener('wheel', onWheel);
+    }, []);
 
     return (
         <div>
@@ -69,7 +85,9 @@ export function Home() {
             {/* CATEGORIES */}
             {categories && categories.length > 0 && (
                 <section className="px-6 py-8">
-                    <div className="mx-auto flex max-w-6xl gap-4 overflow-x-auto pb-2">
+                    <div
+                        ref={categoriesRef}
+                        className="no-scrollbar mx-auto flex max-w-6xl gap-4 overflow-x-auto pb-2">
                         {categories.map((cat) => (
                             <Link
                                 key={cat.id}

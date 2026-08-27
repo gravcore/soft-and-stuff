@@ -166,7 +166,7 @@ export function CategoryCombobox({ value, initialName, initialImageUrl, onChange
                                     className="flex w-full items-center
                                     gap-2 border-t border-border px-4 py-2.5
                                     text-left text-sm text-accent
-                                    hover:bg-surface-2 disabled:opacity-50"
+                                    hover:bg-surface-2 disabled:opacity-50 hover:cursor-pointer"
                                 >
                                     <Plus size={14} />
                                     

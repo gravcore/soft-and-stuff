@@ -9,7 +9,7 @@ export const createProductSchema = z.object({
         z.string()
         .min(1, schemaError('PRODUCT_NAME_TOO_SHORT', 'Product name too short'))
         .max(255, schemaError('PRODUCT_NAME_TOO_LONG', 'Product name too long')),
-    productDescription: 
+    description: 
         z.string()
         .max(5000, schemaError('PRODUCT_DESCRIPTION_TOO_LONG', 'Product description is too long'))
         .optional(),
@@ -75,7 +75,7 @@ export const bulkProductRowSchema = z.object({
         z.string()
         .min(1, schemaError('PRODUCT_NAME_TOO_SHORT', 'Product name too short'))
         .max(255, schemaError('PRODUCT_NAME_TOO_LONG', 'Product name too long')),
-    productDescription: 
+    description: 
         z.string()
         .max(5000, schemaError('PRODUCT_DESCRIPTION_TOO_LONG', 'Product description is too long'))
         .optional(),
@@ -91,19 +91,10 @@ export const bulkProductRowSchema = z.object({
         z.coerce.number().int()
         .min(0, schemaError('INVALID_STOCK', 'Stock must be 0 or greater'))
         .default(0),
-    isActive:
-        z.string()
-        .optional()
-        .transform((val) => val === 'true' || val === '1')
-        .pipe(z.boolean()) // continue chaining
-        .default(true), 
+    
+    isActive: z.boolean().default(true),
 
-    isFeatured:
-        z.string()
-         .optional()
-         .transform((val) => val === 'true' || val === '1')
-         .pipe(z.boolean())
-         .default(false),
+    isFeatured: z.boolean().default(false),
 
     priceInCents: 
         z.coerce.number(schemaError('PRODUCT_PRICE_REQUIRED', 'Product price required')).int()
@@ -114,45 +105,16 @@ export const bulkProductRowSchema = z.object({
         .min(0, schemaError('INVALID_PRICE', 'Price must be 0 or greater'))
         .optional(),
 
-    imagesUrl:
-        z.string()
-         .optional()
-         .transform((val) => 
-            val
-                ? val.split(',').map((url) => url.trim()).filter(Boolean)
-                : []
-         )
-         .pipe(z.array(z.url(schemaError('PRODUCT_IMAGE_INVALID_URL', 'Each image must be a valid url'))))
+    imagesUrl: 
+        z.array(z.url(schemaError('PRODUCT_IMAGE_INVALID_URL', 'Each image must be a valid url')))
          .default([]),
 
     videosUrl:
-        z.string()
-         .optional()
-         .transform((val) => 
-            val
-                ? val.split(',').map((url) => url.trim()).filter(Boolean)
-                : []
-         )
-         .pipe(z.array(z.url(schemaError('PRODUCT_VIDEO_INVALID_URL', 'Each video must be a valid url'))))
+        z.array(z.url(schemaError('PRODUCT_VIDEO_INVALID_URL', 'Each video must be a valid url')))
          .default([]),
 
-    metadata:
-        z.string()
-         .optional()
-         .transform((val, ctx) => {
-            if (!val) return {};
-            try {
-                return JSON.parse(val);
-            } catch {
-                ctx.addIssue({
-                    code: 'custom',
-                    message: 'PRODUCT_METADATA_INVALID_JSON',
-                });
-                return {};
-            }
-         })
-         .pipe(z.record(z.string(), z.unknown()))
-         .default({}),
+    metadata: z.record(z.string(), z.unknown())
+               .default({}),
 });
 
 export type CreateProductInput = z.infer<typeof createProductSchema>;

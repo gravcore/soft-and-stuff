@@ -1,5 +1,6 @@
 import httpClient from "@/shared/services/httpClient";
 import type { Product, ProductFilters, PaginatedProducts, Category } from '../types/product.types';
+import type { BulkCreateResult, BulkProductRowInput } from "../schema/productsSchema";
 
 interface RawProduct {
     id: string;
@@ -64,7 +65,7 @@ export const fetchProductBySlug = async (slug: string): Promise<Product> => {
 };
 
 export const fetchProductById = async (id: string): Promise<Product> => {
-    const { data } = await httpClient.get(`/products/${id}`);
+    const { data } = await httpClient.get(`/products/id/${id}`);
     return mapProduct(data.data.product);
 };
 
@@ -107,7 +108,7 @@ export const uploadProductVideo = async (file: File, title: string): Promise<{ v
 };
 
 export const createCategory = async (name: string): Promise<Category> => {
-    const { data } = await httpClient.post('/categories', { name });
+    const { data } = await httpClient.post('/products/categories', { name });
     const category = data.data.category;
     return {
         id: category.id,
@@ -129,4 +130,11 @@ export const searchCategories = async (query: string): Promise<Category[]> => {
         slug: c.slug,
         imageUrl: c.image_url,
     }));
+};
+
+export const bulkCreateProducts = async (rows: BulkProductRowInput[]): Promise<BulkCreateResult[]> => {
+    const { data } = await httpClient.post('/products/bulk', {
+        products: rows
+    }, { timeout: 60_000 });
+    return data.data.results;
 };

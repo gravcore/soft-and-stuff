@@ -78,6 +78,40 @@ body {
     cursor: pointer;
 }
 
+/* Fade animation */
+::view-transition-old(*) {
+    /* *: images */
+    animation: none;
+    opacity: 0;
+}
+
+::view-transition-new(*) {
+    /* *: images */
+    animation: none;
+    opacity: 1;
+}
+
+/* Sizing/position animation */
+::view-transition-group(*) {
+    /* *: images */
+    animation-duration: 300ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-group(root) {
+    /* root: content around */
+    animation-duration: 200ms;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 @import "tailwindcss";
 
 @custom-variant hover (&:hover);

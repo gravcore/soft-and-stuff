@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createCategory, createProduct, deleteProduct, updateProduct, type ProductInput } from '../services/productsApi';
+import { bulkCreateProducts, createCategory, createProduct, deleteProduct, updateProduct, type ProductInput } from '../services/productsApi';
+import type { BulkProductRowInput } from '../schema/productsSchema';
 
 export function useCreateProduct() {
     const queryClient = useQueryClient(); // React Query's cache
@@ -41,5 +42,16 @@ export function useCreateCategory() {
     return useMutation({
         mutationFn: (name: string) => createCategory(name),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: ['categories'] }),
+    });
+}
+
+export function useBulkCreateProducts() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (rows: BulkProductRowInput[]) => bulkCreateProducts(rows),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['products'] });
+        },
     });
 }

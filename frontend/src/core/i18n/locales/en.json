@@ -174,7 +174,18 @@
       "active": "Active (visible to customers)",
       "featured": "Featured",
       "saving": "Saving...",
-      "save": "Save Product"
+      "save": "Save Product",
+      "bulkRowInvalid": "Row {{row}}: {{error}}",
+      "bulkUploadTitle": "Bulk Upload Products",
+      "bulkUploadHint": "CSV Columns: productName, categoryName, productDescription, slug, sku, priceInCents, comparePrice, stock, isActive, isFeatured, imagesUrl, videosUrl, metadata. For imagesUrl/videosUrl, separate multiple urls with commas. metadata must be valid JSON, e.g. {\"color\":\"red\"}.}",
+      "selectCsv": "Select a CSV file",
+      "rowsReady": "{{count}} products ready to upload",
+      "uploading": "Uploading...",
+      "confirmUpload": "Upload {{count}} products",
+      "rowResult": "Row {{row}}: ",
+      "rowSuccess": "created",
+      "downloadTemplate": "Download CSV template",
+      "editProduct": "Edit Product"
     }
   },
   "home": {

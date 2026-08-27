@@ -33,7 +33,7 @@ const adminGuard = [authenticate(), authorize('admin')];
  *       403: { description: Insufficient permissions }
  *       404: { description: Not found }
  */
-router.get('/:id', ...adminGuard, productsControllerV1.getById);
+router.get('/id/:id', ...adminGuard, productsControllerV1.getById);
 router.post('/',        ...adminGuard, validateSchema(createProductSchema), productsControllerV1.create);
 router.patch('/:id',    ...adminGuard, validateSchema(updateProductSchema), productsControllerV1.update);
 router.delete('/:id',   ...adminGuard, productsControllerV1.remove);
@@ -47,6 +47,6 @@ router.post('/categories', ...adminGuard, validateSchema(createCategorySchema), 
  *     tags: [Products]
  *     security: [{ bearerAuth: [] }]
  */
-router.post('/bulk', ...adminGuard, validateSchema(z.array(bulkProductRowSchema)), productsControllerV1.bulkCreate);
+router.post('/bulk', ...adminGuard, validateSchema(z.object({ products: z.array(bulkProductRowSchema) })), productsControllerV1.bulkCreate);
 
 export default router;

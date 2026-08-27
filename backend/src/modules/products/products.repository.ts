@@ -177,8 +177,12 @@ export const productsRepository = {
         return rows[0];
     },
 
-    async slugExists(table: 'products' | 'categories', slug: string): Promise<boolean> {
-        const { rows } = await db.query(`SELECT 1 FROM ${table} WHERE slug = $1 LIMIT 1`, [slug]);
+    async valueExists(table: 'products' | 'categories', field: 'slug' | 'sku', value: string): Promise<boolean> {
+        const column = field === 'slug' ? 'slug' : 'sku'; // kept explicit in case column names ever diverge from field names
+        const { rows } = await db.query(
+            `SELECT 1 FROM ${table} WHERE ${column} = $1 LIMIT 1`, 
+            [value]
+        );
         return rows.length > 0;
     },
      
@@ -186,7 +190,7 @@ export const productsRepository = {
         const { rows } = await db.query<ProductRow>(
             `INSERT INTO products
             (category_id, product_name, slug, product_description, price_in_cents, compare_price,
-              sku, stock, is_featured, images, videos_id, metadata)
+              sku, stock, is_featured, images_url, videos_url, metadata)
             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
             RETURNING *`,
             [
@@ -293,7 +297,7 @@ export const productsRepository = {
 
             for (const lower of missingLowerNames) {
                 const original = lowerToOriginal.get(lower)!;
-                const slug = await productsService.getUniqueSlug(original, 'categories');
+                const slug = await productsService.getUniqueValue({field:'slug', name: original, table: 'categories'});
                 missingWithSlugs.push({ name: original, slug });
             }
 
@@ -329,7 +333,7 @@ export const productsRepository = {
         const params = products.flatMap((p) => [
             p.categoryId,
             p.productName,
-            p.productDescription ?? null,
+            p.description ?? null,
             p.slug,
             p.sku,
             p.priceInCents,

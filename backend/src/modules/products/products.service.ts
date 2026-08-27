@@ -5,6 +5,7 @@ import { BulkCreateResult, BulkProductRowInput, CreateProductInput, UpdateProduc
 import { Request } from 'express';
 import { ProductFilters } from "./products.types";
 import { withTransaction } from "@/config/database";
+import { env } from "@/config/env";
 
 // Converts a product name into a URL-friendly slug
 // "Running sheos - Men's" -> "running-shoes-mens"
@@ -17,6 +18,11 @@ const slugify = (name: string): string =>
         .trim()                       // Removes leading and trailing spaces e.g. " running shoes " -> "running shoes"
         .replace(/\s+/g, '-');        // replace spaces with hyphens (\s+ = one or more whitespace chars)
 
+const skuify = (productName: string): string => {
+    const sku = slugify(productName).slice(0, 10).toUpperCase()
+        .replace(/-/g, '');
+    return `SKU-${sku}`;
+}
 
 // How many rows to insert per database round-trip
 // For the bulk multiple insertion of products
@@ -46,12 +52,19 @@ export const productsService = {
         return productsRepository.findCategories();
     },
 
-    async getUniqueSlug(name: string, table: 'products' | 'categories'): Promise<string> {
-        const base = slugify(name);
+    async getUniqueValue(params: {
+        field: 'slug' | 'sku',
+        table: 'products' | 'categories',
+        providedValue?: string | undefined,
+        name: string;
+    }): Promise<string> {
+        const base = params.providedValue?.trim() 
+            || (params.field === 'slug' ? slugify(params.name) : skuify(params.name));
+        
         let candidate = base;
         let suffix = 2;
 
-        while (await productsRepository.slugExists(table, candidate)) {
+        while (await productsRepository.valueExists(params.table, params.field, candidate)) {
             candidate = `${base}-${suffix}`;
             suffix++;
         }
@@ -66,7 +79,7 @@ export const productsService = {
         const existing = await productsRepository.findCategoryByName(normalized);
         if (existing) return existing;
         
-        return productsRepository.createCategory(displayName, await this.getUniqueSlug(displayName, 'categories'));
+        return productsRepository.createCategory(displayName, await this.getUniqueValue({field: 'slug', table: 'categories', name: displayName,}));
     },
 
     async searchCategories(query: string) {
@@ -76,7 +89,7 @@ export const productsService = {
     },
 
     async create(input: CreateProductInput) {
-        const slug = await this.getUniqueSlug(input.productName, 'products');
+        const slug = await this.getUniqueValue({name: input.productName, table: 'products', field: 'slug'});
         return productsRepository.create({ ...input, slug });
     },
 
@@ -108,6 +121,8 @@ export const productsService = {
         const withCategoryId = rows.map((r) => ({
             ...r,
             categoryId: r.categoryName ? nameToId.get(r.categoryName.trim().toLowerCase()) : undefined,
+            slug: r.slug?.trim() || slugify(r.productName),
+            sku: r.sku?.trim() || skuify(r.productName),
         }));
 
         const results: BulkCreateResult[] = [];
@@ -146,9 +161,11 @@ export const productsService = {
             } catch {
                 // Something in this chunk failed
                 for (let i = 0; i < validChunk.length; i++) {
+                    const row = validChunk[i];
+
                     try {
                         const [inserted] = await withTransaction(((client) => 
-                            productsRepository.bulkInsertProducts([validChunk[i]], client)
+                            productsRepository.bulkInsertProducts([row], client)
                         ));
 
                         results.push({
@@ -156,12 +173,41 @@ export const productsService = {
                             success: true,
                             productId: inserted.id
                         });
-                    } catch (err) {
-                        results.push({
-                            row: start + i,
-                            success: false,
-                            error: err instanceof Error ? err.message : 'UNKNOWN_ERROR',
-                        });
+                    } catch (rowErr) {
+                        const pgCode = (rowErr as { code?: string}).code;
+                        const constraint = (rowErr as {constraint?: string}).constraint;
+
+                        // 23505 unique violation from DB
+                        if (pgCode === '23505' && constraint?.includes('slug')) {
+                            row.slug = await productsService.getUniqueValue({ field: 'slug', table: 'products', providedValue: row.slug, name: row.productName });
+                        } else if (pgCode === '23505' && constraint?.includes('sku')) {
+                            row.sku = await productsService.getUniqueValue({ field: 'sku', table: 'products', providedValue: row.sku, name: row.productName });
+                        } else {
+                            results.push({
+                                row: start + i,
+                                success: false,
+                                error: env.NODE_ENV === 'development' ? rowErr instanceof Error ? rowErr.message : 'UNKNOWN_ERROR' : `ERROR_IN_COLUMNS_WHILE_INSERTING::${row.productName}`,
+                            });
+                            continue; // skip the retry below
+                        }
+
+                        // Retry once only for this row, only after actually fixing
+                        try {
+                            const [retried] = await withTransaction((client) => 
+                                productsRepository.bulkInsertProducts([row], client)
+                            );
+                            results.push({ row: start + i, success: true, productId: retried.id });
+                        } catch (retryErr) {
+                            results.push({
+                                row: start + i,
+                                success: false,
+                                error:
+                                    env.NODE_ENV === 'development'
+                                        ? retryErr instanceof Error ? retryErr.message : 'UNKNOWN_ERROR'
+                                        : `ERROR_IN_COLUMNS_WHILE_INSERTING::${row.productName}`,
+                            });
+                        }
+
                     }
                 }
             }

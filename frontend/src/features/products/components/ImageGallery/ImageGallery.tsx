@@ -1,7 +1,7 @@
 import { useState, useRef, type MouseEvent } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 
-export function ImageGallery({ images, alt }: { images: string[]; alt: string }) {
+export function ImageGallery({ images, alt, viewTransitionName }: { images: string[]; alt: string; viewTransitionName?: string }) {
     const [activeIndex, setActiveIndex] = useState(0);
     const cardRef = useRef<HTMLDivElement>(null);
 
@@ -34,7 +34,10 @@ export function ImageGallery({ images, alt }: { images: string[]; alt: string })
                     style={{ rotateX, rotateY }}
                     className="aspect-square overflow-hidden rounded-2xl bg-surface-2"
                 >
-                    <img src={images[activeIndex]} alt={alt} className="h-full w-full object-cover" />
+                    <img 
+                        src={images[activeIndex]} alt={alt} className="h-full w-full object-cover rounded-2xl" 
+                        style={{ viewTransitionName }}
+                    />
                 </motion.div>
             </div>
 

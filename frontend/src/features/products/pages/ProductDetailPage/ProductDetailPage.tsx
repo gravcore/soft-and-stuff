@@ -1,11 +1,12 @@
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Minus, Plus, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Minus, Pencil, Plus, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useProduct } from '../../hooks/useProducts';
 import { ImageGallery } from '../../components/ImageGallery/ImageGallery';
 import { formatPrice } from '../../utils/formatPrice';
+import { useAuthContext } from '@/core/auth/AuthContext';
 
 export function ProductDetailPage() {
     const { slug } = useParams();
@@ -14,6 +15,7 @@ export function ProductDetailPage() {
     const [quantity, setQuantity] = useState(1);
     const canGoBack = (window.history.state?.idx ?? 0) > 0;
     const navigate = useNavigate();
+    const { user } = useAuthContext();
 
     const colors = (product?.metadata?.colors as { name: string; hex: string }[] | undefined) ?? [];
     const [selectedColor, setselectedColor] = useState<string | null>(null);
@@ -61,9 +63,9 @@ export function ProductDetailPage() {
                 <button 
                     onClick={() => navigate(-1)}
                     className="mb-6 inline-flex items-center gap-2 text-sm text-muted
-                    hover:text-ink"
+                    hover:text-ink hover:cursor-pointer"
                 >
-                        <ArrowLeft size={16} /> {t('common.back')}
+                        <ArrowLeft size={20} /> {t('common.back')}
                 </button>
             )}
 
@@ -71,12 +73,23 @@ export function ProductDetailPage() {
             <div className="grid gap-10 md:grid-cols-2">
                 
                 {/* Image */}
-                <ImageGallery images={product.imagesUrl} alt={product.productName} />
+                <ImageGallery images={product.imagesUrl} alt={product.productName} viewTransitionName={`product-image-${product.id}`} />
 
                 {/* Info */}
                 <div>
                     {/* Name */}
-                    <h1 className="text-2xl font-semibold text-ink">{product.productName}</h1>
+                    <div className="flex justify-between w-full">
+                        <h1 className="text-2xl font-semibold text-ink">{product.productName}</h1>
+                        {user?.role === 'admin' && (
+                            <Link
+                                to={`/admin/products/${product.id}/edit`}
+                                className="ml-4 rounded-full flex items-center gap-2 bg-[#012938] px-4 py-2 text-sm font-semibold text-white shadow-lg"
+                            >
+                                <Pencil size={16} />
+                                {t('products.admin.editProduct')}
+                            </Link>
+                        )}
+                    </div>
                     {product.sku && <p className="mt-1 text-xs text-muted">SKU: {product.sku}</p>}
 
                     {/* Prices */}
@@ -124,7 +137,7 @@ export function ProductDetailPage() {
                     {/* Videos */}
                     {product.videosUrl.length > 0 && (
                         product.videosUrl.map((url, i) => (
-                            <div className="mt-6 aspect-video overflow-hidden rounded-xl">
+                            <div key={i} className="mt-6 aspect-video overflow-hidden rounded-xl">
                                 <iframe 
                                     src={url}
                                     title={`${product.productName} video ${i}`}
@@ -137,7 +150,7 @@ export function ProductDetailPage() {
                     )}
 
                     {/* Add to Cart */}
-                    <div className="mt-8 flex items-center gap-4">
+                    <div className="sticky bottom-4 z-10 mt-8 flex items-center gap-4 backdrop-blur-md bg-transparent p-2 rounded-md">
                         <div className="flex items-center rounded-full border border-border">
                             {/* - */}
                             <button 
@@ -165,8 +178,11 @@ export function ProductDetailPage() {
                             className="flex flex-1 items-center justify-center
                             gap-2 rounded-full bg-accent py-3.5 text-sm
                             font-semibold text-white transition-transform
-                            hover:scale-[1.02] disabled:opacity-50
-                            disabled:hover:scale-100"
+                            hover:scale-[1.02] 
+                            hover:cursor-pointer
+                            disabled:opacity-50
+                            disabled:hover:scale-100
+                            disabled:hover:cursor-not-allowed"
                         >
                             <ShoppingBag size={16} />{t('products.addToCart', 'Add to Cart')}
                         </button>

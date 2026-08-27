@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useNavigate, useParams } from "react-router-dom";
-import { Controller, useForm, type Resolver } from 'react-hook-form';
+import { Controller, useForm, useWatch, type Resolver } from 'react-hook-form';
 import { zodResolver } from "@/shared/utils/zodResolverWithCode";
 import { X, ImagePlus, Save, Video, Tag, Hash, FileText, Boxes } from 'lucide-react';
 import { useProductById } from "../../hooks/useProducts";
@@ -8,14 +8,16 @@ import { useCreateProduct, useUpdateProduct } from "../../hooks/useProductMutati
 import { useParseApiError } from "@/shared/hooks/useParseApiError";
 import { createProductSchema, updateProductSchema, type CreateProductInput } from "../../schema/productsSchema";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { uploadProductImage, uploadProductVideo } from "../../services/productsApi";
 import { FormField, type ZodFieldError } from "@/shared/components/FormField/FormField";
 import { CategoryCombobox } from "../../components/CategoryCombobox/CategoryCombobox";
 import { PriceInput } from "../../components/PriceInput/PriceInput";
+import { skuify, slugify } from "@/shared/utils/ify";
 
 export function AdminProductFormPage() {
     const { id } = useParams();
+    console.log(id);
     const isEdit = !!id;
     const navigate = useNavigate();
     const { data: existing } = useProductById(isEdit ? id! : '');
@@ -33,7 +35,7 @@ export function AdminProductFormPage() {
         values: existing ? {
             categoryId: existing.categoryId ?? '',
             productName: existing.productName,
-            productDescription: existing.description ?? '',
+            description: existing.description ?? '',
             slug: existing.slug,
             sku: existing.sku ?? '',
             stock: existing.stock,
@@ -48,6 +50,23 @@ export function AdminProductFormPage() {
         mode: 'onBlur',
     });
 
+    // Track when name changes, change slug and sku if those are not edited manually
+    const productName = useWatch({ control, name: 'productName' });
+    const slugManuallyEdited = useRef(false);
+    const skuManuallyEdited = useRef(false);
+
+    useEffect(() => {
+        if (isEdit) return; // Only autofill slug/sku when is creating a product
+
+        if (!slugManuallyEdited.current) {
+            setValue('slug', slugify(productName || ''), { shouldValidate: false });
+        }
+
+        if (!skuManuallyEdited.current) {
+            setValue('sku', skuify(productName || ''), { shouldValidate: false });
+        }
+    }, [productName, isEdit, setValue]);
+
     const mutation = isEdit ? updateProduct : createProduct;
     const { codes, hasCodes, fallbackMessage } = useParseApiError(mutation.error);
 
@@ -56,11 +75,11 @@ export function AdminProductFormPage() {
         
         if (isEdit) {
             updateProduct.mutate({ id: id!, input: payload }, { 
-                onSuccess: () => navigate(`/products/${payload.slug}`),
+                onSuccess: (data) => navigate(`/products/${data.slug}`),
             });
         } else {
             createProduct.mutate(payload, {
-                onSuccess: () => navigate(`/products/${payload.slug}`),
+                onSuccess: (data) => navigate(`/products/${data.slug}`),
             });
         }
     }
@@ -152,7 +171,7 @@ export function AdminProductFormPage() {
     }
 
     return (
-        <div className="mx-auto max-w-lg px-4 pb-24 pt-6 md:pt-16">
+        <div className="mx-auto max-w-xl px-4 pb-24 pt-6 md:pt-16">
 
             {/* Header */}
             <div className="mb-6 flex items-center justify-between">
@@ -181,7 +200,7 @@ export function AdminProductFormPage() {
                         {t('products.admin.images', 'Product Images')}
                     </p>
 
-                    <div className="flex-flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2">
 
                         {/* One thumbnail per already-uploaded image url stored in the form */}
                         {(getValues('imagesUrl') ?? []).map((url) => (
@@ -230,10 +249,13 @@ export function AdminProductFormPage() {
                     <div className="flex flex-wrap gap-2">
 
                         {(getValues('videosUrl') ?? []).map((url) => (
-                            <div key={url} className="flex h-20 w-32 items-center
-                            justify-center rounded-xl bg-surface-2 text-[0.625rem]
-                            text-muted break-all p-1">
-                                {url}
+                            <div key={url} className="h-38 w-66 overflow-hidden rounded-xl bg-surface-2">
+                                <iframe 
+                                    src={url}
+                                    title={url}
+                                    className="h-full w-full"
+                                    allow="fullscreen"
+                                />
                             </div>
                         ))}
 
@@ -283,7 +305,9 @@ export function AdminProductFormPage() {
                     label={t('products.admin.slug', 'Slug')}
                     icon={Hash} placeholder={t('products.admin.slugPlaceholder', 'e.g. airpods-pro')}
                     featureError="products.admin"
-                    error={errors.slug} {...register('slug')}
+                    error={errors.slug} 
+                    {...register('slug')}
+                    onChange={() => slugManuallyEdited.current = true}
                 />
 
                 {/* Identity field: SKU */}
@@ -292,6 +316,7 @@ export function AdminProductFormPage() {
                     icon={FileText} placeholder={t('products.admin.skuPlaceholder', 'e.g. APP-2ND-GEN')}
                     featureError="products.admin"
                     error={errors.sku} {...register('sku')}
+                    onChange={() => skuManuallyEdited.current = true }
                 />
 
                 {/* Category dropdown */}
@@ -352,7 +377,7 @@ export function AdminProductFormPage() {
                     onKeyDown={(e) => {
                         if (['-', '.', 'e', 'E', '+'].includes(e.key)) e.preventDefault();
                     }}
-                    {...register('stock')}
+                    {...register('stock', {valueAsNumber: true})}
                 />
 
                 {/* Description textarea */}
@@ -362,15 +387,15 @@ export function AdminProductFormPage() {
                     </span>
 
                     <textarea 
-                        {...register('productDescription')}
+                        {...register('description')}
                         rows={4}
                         placeholder={t('products.admin.descriptionPlaceholder', 'Describe the product features and details...')}
                         className="w-full rounded-lg border border-border bg-surface-2 px-3 
                         py-2.5 text-sm text-ink outline-none focus:border-accent"
                     />
 
-                    {errors.productDescription && <span className="text-xs text-danger">
-                        {t(`products.admin.errors.${(errors.productDescription as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.productDescription as ZodFieldError).params?.code} ${errors.productDescription.message ?? ''}`)}
+                    {errors.description && <span className="text-xs text-danger">
+                        {t(`products.admin.errors.${(errors.description as ZodFieldError).params?.code}`, `products.admin.errors.${(errors.description as ZodFieldError).params?.code} ${errors.description.message ?? ''}`)}
                     </span>}
                 </label>
 

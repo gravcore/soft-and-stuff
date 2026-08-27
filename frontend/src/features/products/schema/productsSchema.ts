@@ -9,7 +9,7 @@ export const createProductSchema = z.object({
         z.string()
         .min(1, schemaError('PRODUCT_NAME_TOO_SHORT', 'Product name too short'))
         .max(255, schemaError('PRODUCT_NAME_TOO_LONG', 'Product name too long')),
-    productDescription: 
+    description: 
         z.string()
         .max(5000, schemaError('PRODUCT_DESCRIPTION_TOO_LONG', 'Product description is too long'))
         .optional(),
@@ -60,6 +60,110 @@ export const productFiltersSchema = z.object({
     sort: z.enum([ 'price_asc', 'price_desc', 'newest', 'popular' ]).optional(),
 });
 
+export const createCategorySchema = z.object({
+    name: z.string()
+           .min(1, schemaError('CATEGORY_NAME_TOO_SHORT', 'Category name too short'))
+           .max(100),
+});
+
+export const bulkProductRowSchema = z.object({
+    categoryName:
+        z.string() 
+         .min(1, schemaError('PRODUCT_CATEGORY_NAME_REQUIRED', 'Category name is required'))
+         .optional(),
+    productName: 
+        z.string()
+        .min(1, schemaError('PRODUCT_NAME_TOO_SHORT', 'Product name too short'))
+        .max(255, schemaError('PRODUCT_NAME_TOO_LONG', 'Product name too long')),
+    description: 
+        z.string()
+        .max(5000, schemaError('PRODUCT_DESCRIPTION_TOO_LONG', 'Product description is too long'))
+        .optional(),
+    slug: 
+        z.string()
+        .min(1, schemaError('PRODUCT_SLUG_TOO_SHORT', 'Product slug too short'))
+        .max(255, schemaError('PRODUCT_SLUG_TOO_LONG', 'Product slug too long')),
+    sku: 
+        z.string()
+        .min(1, schemaError('PRODUCT_SKU_TOO_SHORT', 'Product sku too short'))
+        .max(50, schemaError('PRODUCT_SKU_TOO_LONG', 'Product sku too long')),
+    stock: 
+        z.coerce.number().int()
+        .min(0, schemaError('INVALID_STOCK', 'Stock must be 0 or greater'))
+        .default(0),
+    isActive:
+        z.string()
+        .optional()
+        .transform((val) => val === 'true' || val === '1')
+        .pipe(z.boolean()) // continue chaining
+        .default(true), 
+
+    isFeatured:
+        z.string()
+         .optional()
+         .transform((val) => val === 'true' || val === '1')
+         .pipe(z.boolean())
+         .default(false),
+
+    priceInCents: 
+        z.coerce.number(schemaError('PRODUCT_PRICE_REQUIRED', 'Product price required')).int()
+        .min(0, schemaError('INVALID_PRICE', 'Price must be 0 or greater')),
+
+    comparePrice: 
+        z.coerce.number(schemaError('PRODUCT_COMPARE_PRICE_REQUIRE_NUMBER', 'Product compare price require a number')).int() 
+        .min(0, schemaError('INVALID_PRICE', 'Price must be 0 or greater'))
+        .optional(),
+
+    imagesUrl:
+        z.string()
+         .optional()
+         .transform((val) => 
+            val
+                ? val.split(',').map((url) => url.trim()).filter(Boolean)
+                : []
+         )
+         .pipe(z.array(z.url(schemaError('PRODUCT_IMAGE_INVALID_URL', 'Each image must be a valid url'))))
+         .default([]),
+
+    videosUrl:
+        z.string()
+         .optional()
+         .transform((val) => 
+            val
+                ? val.split(',').map((url) => url.trim()).filter(Boolean)
+                : []
+         )
+         .pipe(z.array(z.url(schemaError('PRODUCT_VIDEO_INVALID_URL', 'Each video must be a valid url'))))
+         .default([]),
+
+    metadata:
+        z.string()
+         .optional()
+         .transform((val, ctx) => {
+            if (!val) return {};
+            try {
+                return JSON.parse(val);
+            } catch {
+                ctx.addIssue({
+                    code: 'custom',
+                    message: 'PRODUCT_METADATA_INVALID_JSON',
+                });
+                return {};
+            }
+         })
+         .pipe(z.record(z.string(), z.unknown()))
+         .default({}),
+});
+
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type ProductFiltersInput = z.infer<typeof productFiltersSchema>;
+export type BulkProductRowInput = z.infer<typeof bulkProductRowSchema>;
+
+// One result per row in bulk product
+export interface BulkCreateResult {
+    row: number;
+    success: boolean;
+    error?: string;     // When success is false
+    productId?: string;  // When success is true
+}
