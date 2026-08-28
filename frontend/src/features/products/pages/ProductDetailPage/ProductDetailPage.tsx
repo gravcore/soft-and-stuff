@@ -1,12 +1,14 @@
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowLeft, Minus, Pencil, Plus, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Pencil, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useProduct } from '../../hooks/useProducts';
 import { ImageGallery } from '../../components/ImageGallery/ImageGallery';
 import { formatPrice } from '../../utils/formatPrice';
 import { useAuthContext } from '@/core/auth/AuthContext';
+import { QuantityStepper } from '@/features/cart/components/QuantityStepper';
+import { useCart } from '@/features/cart/hooks/useCart';
 
 export function ProductDetailPage() {
     const { slug } = useParams();
@@ -16,6 +18,7 @@ export function ProductDetailPage() {
     const canGoBack = (window.history.state?.idx ?? 0) > 0;
     const navigate = useNavigate();
     const { user } = useAuthContext();
+    const { addItem } = useCart();
 
     const colors = (product?.metadata?.colors as { name: string; hex: string }[] | undefined) ?? [];
     const [selectedColor, setselectedColor] = useState<string | null>(null);
@@ -151,30 +154,16 @@ export function ProductDetailPage() {
 
                     {/* Add to Cart */}
                     <div className="sticky bottom-4 z-10 mt-8 flex items-center gap-4 backdrop-blur-md bg-transparent p-2 rounded-md">
-                        <div className="flex items-center rounded-full border border-border">
-                            {/* - */}
-                            <button 
-                                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                                className="p-3 text-muted hover:text-ink"
-                            >
-                                <Minus size={14} />
-                            </button>
-
-                            {/* Quantity */}
-                            <span className="w-8 text-center text-sm font-medium">{quantity}</span>
-
-                            {/* + */}
-                            <button
-                                onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                                className="p-3 text-muted hover:text-ink"
-                            >
-                                <Plus size={14} />
-                            </button>
-                        </div>
+                        <QuantityStepper
+                            quantity={quantity}
+                            max={product.stock}
+                            onChange={setQuantity}
+                        />
 
                         {/* Add to cart button */}
                         <button
-                            disabled={product.stock === 0}
+                            disabled={product.stock === 0 || addItem.isPending}
+                            onClick={() => addItem.mutate({ productId: product.id, quantity })}
                             className="flex flex-1 items-center justify-center
                             gap-2 rounded-full bg-accent py-3.5 text-sm
                             font-semibold text-white transition-transform

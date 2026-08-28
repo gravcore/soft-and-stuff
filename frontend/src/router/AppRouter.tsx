@@ -19,6 +19,7 @@ const ProductDetailPage = lazy(() => import('@/features/products/pages/ProductDe
 const AdminProductListPage = lazy(() => import('@/features/products/pages/AdminProductListPage/AdminProductListPage').then((m) => ({ default: m.AdminProductListPage })));
 const AdminProductFormPage = lazy(() => import('@/features/products/pages/AdminProductFormPage/AdminProductFormPage').then((m) => ({ default: m.AdminProductFormPage })));
 const AdminBulkUploadPage = lazy(() => import('@/features/products/pages/AdminBulkUploadPage/AdminBulkUploadPage').then((m) => ({ default: m.AdminBulkUploadPage })));
+const CartPage = lazy(() => import('@/features/cart/pages/CartPage/CartPage').then((m) => ({ default: m.CartPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
             { path: '/', element: wrap(Home) },
             { path: '/products', element: wrap(ProductListPage) },
             { path: '/products/:slug', element: wrap(ProductDetailPage) },
+            { path: '/cart', element: wrap(CartPage) },
             { path: '/settings', element: wrap(SettingsPage) },
             { 
                 element: <ProtectedRoute />,

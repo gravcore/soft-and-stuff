@@ -219,5 +219,15 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "cart": {
+    "promoCode": "Promo code",
+    "applyPromoCode": "Apply",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "cartEmpty": "Your cart is empty.",
+    "browseProducts": "Browse products",
+    "yourCart": "Your Cart",
+    "clearCart": "Clear cart"
   }
 }
