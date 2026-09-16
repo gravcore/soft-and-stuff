@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
+import { PayPalProvider, PayPalOneTimePaymentButton, type OnErrorData } from '@paypal/react-paypal-js/sdk-v6';
 import { useTranslation } from 'react-i18next';
 import { useCreatePaymentIntent, useCapturePayment } from '../hooks/usePayments';
 import type { PaymentMethodComponentProps } from '../config/paymentMethods.config';
@@ -15,10 +15,13 @@ export function PayPalCheckoutButton({ order, onSuccess }: PaymentMethodComponen
 
     return (
         <div className="space-y-2">
-            <PayPalScriptProvider 
-                options={{ clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID }}
+            <PayPalProvider
+                clientId={import.meta.env.VITE_PAYPAL_CLIENT_ID}
+                environment={import.meta.env.VITE_PAYPAL_ENVIRONMENT}
+                components={['paypal-payments']}
             >
-                <PayPalButtons 
+                <PayPalOneTimePaymentButton
+                    presentationMode="auto"
                     createOrder={async () => {
                         const result = await createIntent.mutateAsync({
                             orderId: order.orderId,
@@ -27,7 +30,7 @@ export function PayPalCheckoutButton({ order, onSuccess }: PaymentMethodComponen
                             idempotencyKey: createKey,
                         });
 
-                        return result.providerReference;
+                        return { orderId: result.providerReference };
                     }}
                     onApprove={async () => {
                         await captureIntent.mutateAsync({
@@ -39,8 +42,13 @@ export function PayPalCheckoutButton({ order, onSuccess }: PaymentMethodComponen
 
                         onSuccess();
                     }}
+                    onError={(error: OnErrorData) => {
+                        if (import.meta.env.VITE_ENVIRONMENT === 'development') {
+                            console.error('PayPal payment error:', error.message);
+                        }
+                    }}
                 />
-            </PayPalScriptProvider>
+            </PayPalProvider>
 
             {(createIntent.isError || captureIntent.isError) && (
                 <p className="text-xs text-danger">

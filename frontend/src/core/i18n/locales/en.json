@@ -306,6 +306,9 @@
     "lookingUp": "Looking up...",
     "trackButton": "Track order",
     "orderNumbered": "Order number:",
-    "status": "Status:"
+    "status": "Status:",
+    "cardNumber": "Card number",
+    "monthYear": "MM/YY",
+    "cvv": "CVV"
   }
 }
