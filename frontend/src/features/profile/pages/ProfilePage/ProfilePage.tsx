@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useAuthContext } from "@/core/auth/AuthContext";
 
 const ROWS = [
-    { to: '/profile/orders', icon: Package, key: 'profile.myOrders' },
+    { to: '/orders', icon: Package, key: 'profile.myOrders' },
     { to: '/profile/shipping', icon: Truck, key: 'profile.shippingAddress' },
     { to: '/profile/payment', icon: CreditCard, key: 'profile.paymentMethods' },
     { to: '/settings', icon: SettingsIcon, key: 'profile.settings' },

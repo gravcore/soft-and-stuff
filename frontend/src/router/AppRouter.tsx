@@ -20,6 +20,10 @@ const AdminProductListPage = lazy(() => import('@/features/products/pages/AdminP
 const AdminProductFormPage = lazy(() => import('@/features/products/pages/AdminProductFormPage/AdminProductFormPage').then((m) => ({ default: m.AdminProductFormPage })));
 const AdminBulkUploadPage = lazy(() => import('@/features/products/pages/AdminBulkUploadPage/AdminBulkUploadPage').then((m) => ({ default: m.AdminBulkUploadPage })));
 const CartPage = lazy(() => import('@/features/cart/pages/CartPage/CartPage').then((m) => ({ default: m.CartPage })));
+const ProfileOrdersPage = lazy(() => import('@/features/profile/pages/ProfileOrdersPage/ProfileOrdersPage').then((m) => ({ default: m.ProfileOrdersPage })));
+const CheckoutPage = lazy(() => import('@/features/checkout/pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })));
+const OrderConfirmationPage = lazy(() => import('@/features/checkout/pages/OrderConfirmationPage').then((m) => ({ default: m.OrderConfirmationPage })));
+const OrderStatusPage = lazy(() => import('@/features/checkout/pages/OrderStatusPage').then((m) => ({ default: m.OrderStatusPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
@@ -32,11 +36,16 @@ const router = createBrowserRouter([
             { path: '/products/:slug', element: wrap(ProductDetailPage) },
             { path: '/cart', element: wrap(CartPage) },
             { path: '/settings', element: wrap(SettingsPage) },
+            { path: '/checkout', element: wrap(CheckoutPage) },
+            { path: '/order-confirmation/:trackingId', element: wrap(OrderConfirmationPage) },
+            { path: '/order-status', element: wrap(OrderStatusPage) },
+
             { 
                 element: <ProtectedRoute />,
                 children: [
                     { path: '/profile', element: wrap(ProfilePage) },
                     { path: '/profile/details', element: wrap(ProfileDetailPage) },
+                    { path: '/orders', element: wrap(ProfileOrdersPage) },
                     {
                         element: <AdminRoute />,
                         children: [

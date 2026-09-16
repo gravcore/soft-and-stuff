@@ -1,0 +1,15 @@
+/* Map container */
+.mapWrap :global(.leaflet-tile-pane) {
+    filter: grayscale(35%) brightness(1.05) contrast(0.95);
+}
+
+/* OpenStreetMap credit box */
+.mapWrap :global(.leaflet-control-attribution) {
+    font-size: 10px;
+    background: color-mix(in srgb, var(--surface-2) 50%, transparent);
+}
+
+/* Clickable +/- links buttons inside zoom button container */
+.mapWrap :global(.leaflet-control-zoom a) {
+    border-radius: 8px !important;
+}

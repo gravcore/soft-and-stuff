@@ -54,7 +54,38 @@ const schema = z.object({
 
     BRAND_TITLE: z.string(),
     BRAND_SUBTITLE: z.string(),
+
+    UNIRATE_API_KEY: z.string(),
+
+    SHIPPO_API_KEY: z.string(),
+
+    WAREHOUSE_ADDRESS_JSON: z.string().transform((val, ctx) => {
+        try {
+            return addressJsonSchema.parse(JSON.parse(val));
+        } catch (err) {
+            ctx.addIssue({
+                code: 'custom',
+                message: `WAREHOUSE_ADDRESS_JSON is not valid: ${err}`
+            });
+            return z.NEVER;
+        }
+    }),
+
+    PAYPAL_CLIENT_ID: z.string().min(1),
+    PAYPAL_CLIENT_SECRET: z.string().min(1),
+    PAYPAL_WEBHOOK_ID: z.string().min(1),
 });
+
+const addressJsonSchema = z.object({
+    name: z.string().min(1),
+    street1: z.string().min(1),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    zip: z.string().min(1),
+    country: z.string().length(2),
+    phone: z.string().min(1),
+    email: z.email(),
+})
 
 // safeParse validates without throwing errors
 const parsed = schema.safeParse(process.env);

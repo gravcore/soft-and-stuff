@@ -19,7 +19,9 @@ export interface CartItem {
 // Joins product details so the frontend doesn't need a second request
 export interface CartItemWithProduct extends CartItem {
     product_name: string;
+    product_sku: string | null;
     slug: string;
-    images: string[];
+    images_url: string[];           
     stock: number;
+    weight_oz: number | null;
 }

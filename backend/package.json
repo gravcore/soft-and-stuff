@@ -49,9 +49,11 @@
     "react": "^19.2.4",
     "react-email": "^6.8.1",
     "resend": "^6.10.0",
+    "shippo": "^2.18.0",
     "stripe": "^21.0.1",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
+    "territory-gt": "^1.0.5",
     "zod": "^4.3.6"
   },
   "devDependencies": {

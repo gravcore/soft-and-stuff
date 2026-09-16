@@ -6,6 +6,7 @@ export interface Products {
     slug: string,
     sku: string,
     stock: number,
+    weight_oz: number | null;
     is_active: boolean,
     is_featured: boolean,
     price_in_cents: number,

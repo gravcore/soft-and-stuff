@@ -6,6 +6,14 @@ import { cartService } from '@/modules/cart/cart.service';
 
 export const ordersControllerV1 = {
 
+    async quote(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const identity = { userId: req.user?.sub, sessionId: req.guestSessionId };
+            const cart = await cartService.resolveCart(identity);
+            sendSuccess(res, await ordersService.quote(cart.id, req.body));
+        } catch (err) { next(err); }
+    },
+
     // Checkout works for guest and logged-in users
     async checkout(req: AuthRequest, res: Response, next: NextFunction) {
         try {
@@ -17,11 +25,27 @@ export const ordersControllerV1 = {
         } catch (err) { next(err); }
     },
 
+    async updateShippingAddress(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            const result = await ordersService.updateShippingAddress(
+                req.user?.sub, req.params.id as string, req.body.trackingId,
+                req.body.shippingAddress
+            );
+            sendSuccess(res, result);
+        } catch (err) { next(err); }
+    },
+
     // Tracker
     async trackOrder(req: AuthRequest, res: Response, next: NextFunction) {
         try {
             const order = await ordersService.trackOrder(req.params.trackingId as string);
             sendSuccess(res, { order });
+        } catch (err) { next(err); }
+    },
+
+    async payCod(req: AuthRequest, res: Response, next: NextFunction) {
+        try {
+            sendSuccess(res, await ordersService.payCod(req.user?.sub, req.params.id as string, req.body.trackingId));
         } catch (err) { next(err); }
     },
 

@@ -44,7 +44,7 @@ export const cartRepository = {
         const { rows } = await db.query<CartItemWithProduct>(
             `SELECT
                 ci.id, ci.cart_id, ci.product_id, ci.quantity, ci.price_snapshot, ci.created_at,
-                p.product_name, p.slug, p.images_url, p.stock
+                p.product_name, p.slug, p.images_url, p.stock, p.weight_oz
             FROM cart_items ci
             JOIN products p ON p.id = ci.product_id
             WHERE ci.cart_id = $1

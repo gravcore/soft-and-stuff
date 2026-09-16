@@ -14,6 +14,7 @@ interface CreateOrderParams {
     shipping: number;
     total: number;
     currency: string;
+    notes?: string; 
 }
 
 interface CreateOrderItemParams {
@@ -32,9 +33,9 @@ export const ordersRepository = {
     async create(client: PoolClient, input: CreateOrderParams): Promise<Order> {
         const { rows } = await client.query<Order>(
             `INSERT INTO orders
-                (user_id, order_number, tracking_id, shipping_address, guest_email, subtotal, tax, shipping, total, currency)
+                (user_id, order_number, tracking_id, shipping_address, guest_email, subtotal, tax, shipping, total, currency, notes)
             VALUES
-                ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+                ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
             RETURNING *`,
             [
                 input.userId ?? null,
@@ -47,6 +48,7 @@ export const ordersRepository = {
                 input.shipping,
                 input.total,
                 input.currency,
+                input.notes ?? null,
             ]
         );
         return rows[0];
@@ -178,18 +180,18 @@ export const ordersRepository = {
     // Called by the Stripe webhook after payment succeeds/fails
     async updatePaymentStatus(id: string, status: string): Promise<void> {
         await db.query(
-            `UPDATE orders SET stripe_payment_status = $2, updated_at = NOW()
+            `UPDATE orders SET payment_status = $2, updated_at = NOW()
              WHERE id = $1`,
              [id, status]
         );
     },
 
     // Stores the Stripe PaymentIntent ID right after it's created
-    async attachPaymentIntent(id: string, paymentIntentId: string): Promise<void> {
+    async attachPaymenReference(id: string, provider: string, reference: string): Promise<void> {
         await db.query(
-            `UPDATE orders SET stripe_payment_intent_id = $2, updated_at = NOW()
+            `UPDATE orders SET payment_provider = $2 payment_reference = $3, updated_at = NOW()
              WHERE id = $1`,
-            [id, paymentIntentId]
+            [id, provider, reference]
         );
     },
 
@@ -202,5 +204,25 @@ export const ordersRepository = {
         );
         const nextNumber = parseInt(rows[0].count) + 1;
         return `ORD-${year}-${String(nextNumber).padStart(5, '0')}`;
+    },
+
+    async updateShippingAddress(id: string, address: ShippingAddress, totals: { tax: number; shipping: number; total: number }) {
+        return db.query(
+            `UPDATE orders 
+                SET shipping_address = $2, tax = $3, shipping = $4, total = $5, updated_at = NOW()
+            WHERE id = $1`,
+            [id, JSON.stringify(address), totals.tax, totals.shipping, totals.total]
+        );
+    },
+
+    async findItemWeightsByOrderId(orderId: string) {
+        const { rows } = await db.query<{ product_id: string; quantity: number; price_snapshot: number; weight_oz: number | null }>(
+            `SELECT oi.product_id, oi.quantity, oi.unit_price AS price_snapshot, p.weight_oz
+            FROM order_items oi
+            LEFT JOIN products p ON p.id = oi.product_id
+            WHERE oi.order_id = $1`,
+            [orderId],
+        );
+        return rows;
     },
 };

@@ -11,8 +11,9 @@ export interface Order {
     currency: string;
     shipping_address: ShippingAddress;
     guest_email: string | null;
-    stripe_payment_intent_id: string | null;
-    stripe_payment_status: string | null;
+    payment_provider: 'cod' | 'paypal' | 'stripe' | 'recurrente' | null;
+    payment_reference: string | null;
+    payment_status: 'pending' | 'paid' | 'failed' | null;
     notes: string | null;
     created_at: Date;
     updated_at: Date;
@@ -40,6 +41,8 @@ export interface ShippingAddress {
     zip?: string;
     country: string;
     phone?: string;
+    reference?: string; // landmark text
+    coordinates?: { lat: number; lng: number }; // from the map picker
 }
 
 // The shape of each cart item as the checkout flow needs it

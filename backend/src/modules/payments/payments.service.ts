@@ -1,53 +1,33 @@
-import Stripe from 'stripe';
-import { env } from '@/config/env';
 import { AppError } from '@/shared/errors/AppError';
 import { ordersRepository } from '../orders/orders.repository';
-import { PaymentIntentResult } from './payments.types';
+import { paypalAdapter } from './adapters/paypalAdapter';
+import { PaymentInitResult, PaymentProvider } from './payments.types';
 
-const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+const PAYMENT_PROVIDERS: Record<string, PaymentProvider> = {
+    paypal: paypalAdapter,
+}
+
+function getPaymentProvider(method: string): PaymentProvider {
+    const provider = PAYMENT_PROVIDERS[method];
+    if (!provider) throw new AppError(`Unsupported payment method: ${method}`, 400, 'UNSUPPORTED_PAYMENT_METHOD');
+    return provider;
+}
 
 export const paymentsService = {
 
-    // Creates a Stripe PaymentIntent for an existing order
-    async createIntent(orderId: string): Promise<PaymentIntentResult> {
+    async createPayment(orderId: string, method: string): Promise<PaymentInitResult> {
         const order = await ordersRepository.findById(orderId);
         if (!order) throw new AppError('Order not found', 404, 'ORDER_NOT_FOUND');
+        
+        if (order.payment_status === 'paid') throw new AppError('Order is already paid', 409, 'ALREADY_PAID');
 
-        // Don't let someone create a new payment intent for an order that's already been paid
-        if (order.stripe_payment_status === 'paid') {
-            throw new AppError('Order is already paid', 409, 'ALREADY_PAID');
-        }
-
-        const intent = await stripe.paymentIntents.create({
-            amount: order.total,
-            currency: order.currency.toLowerCase(),
-            metadata: { orderId },  // Webhook match this intent back to our order later
-        });
-
-        // For the record
-        await ordersRepository.attachPaymentIntent(order.id, intent.id);
-
-        return { clientSecret: intent.client_secret };
+        const provider = getPaymentProvider(method);
+        const result = await provider.createPayment(order.id, order.total, order.currency);
+        await ordersRepository.attachPaymenReference(order.id, method, result.providerReference);
+        return result;
     },
 
-    async handleWebhookEvent(event: Stripe.Event): Promise<void> {
-        if (event.type === 'payment_intent.succeeded') {
-            const intent = event.data.object as Stripe.PaymentIntent;
-            const orderId = intent.metadata.orderId;
-
-            if (!orderId) return; // defensive: ignore intents not tied to one of our orders
-
-            await ordersRepository.updateStatus(orderId, 'confirmed');
-            await ordersRepository.updatePaymentStatus(orderId, 'paid');
-        }
-
-        if (event.type === 'payment_intent.payment_failed') {
-            const intent = event.data.object as Stripe.PaymentIntent;
-            const orderId = intent.metadata.orderId;
-
-            if (!orderId) return;
-
-            await ordersRepository.updatePaymentStatus(orderId, 'failed');
-        }
+    async capturePayment(method: string, providerReference: string): Promise<{ status: 'paid' | 'failed' }> {
+        return getPaymentProvider(method).capturePayment(providerReference);
     },
 };
