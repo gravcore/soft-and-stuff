@@ -309,6 +309,9 @@
     "status": "Status:",
     "cardNumber": "Card number",
     "monthYear": "MM/YY",
-    "cvv": "CVV"
+    "cvv": "CVV",
+    "paymentFailed": "Payment failed",
+    "payNow": "Pay now",
+    "cardStripe": "Card through Stripe"
   }
 }

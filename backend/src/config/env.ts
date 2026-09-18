@@ -22,8 +22,9 @@ const schema = z.object({
 
     CSRF_SECRET: z.string().min(32),
     
-    STRIPE_SECRET_KEY: z.string(),
-    STRIPE_WEBHOOK_SECRET: z.string(),
+    STRIPE_ENABLED: z.coerce.boolean().default(false),
+    STRIPE_SECRET_KEY: z.string().default(''),
+    STRIPE_WEBHOOK_SECRET: z.string().default(''),
 
     IMAGEKIT_PUBLIC_KEY: z.string(),
     IMAGEKIT_PRIVATE_KEY: z.string(),

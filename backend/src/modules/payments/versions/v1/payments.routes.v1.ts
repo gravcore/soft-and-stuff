@@ -8,8 +8,9 @@ import { idempotent } from '@/shared/middleware/idempotency.middleware';
 
 const router = Router();
 
-// Webhook paypal's server to server
+// Webhook paypal's and stripe's server to server
 router.post('/webhooks/paypal', paymentsControllerV1.webhookPaypal);
+router.post('/webhooks/stripe', paymentsControllerV1.webhookStripe);
 
 // route intent with soft authentication to allow logged-in users and guests
 router.post('/:orderId/:method', authenticate(false), attachGuestSession, validateSchema(createIntentSchema), idempotent('POST /payments/:orderId/:method'), paymentsControllerV1.createIntent);

@@ -1,17 +1,7 @@
 import { AppError } from '@/shared/errors/AppError';
 import { ordersRepository } from '../orders/orders.repository';
-import { paypalAdapter } from './adapters/paypalAdapter';
-import { PaymentInitResult, PaymentProvider } from './payments.types';
-
-const PAYMENT_PROVIDERS: Record<string, PaymentProvider> = {
-    paypal: paypalAdapter,
-}
-
-function getPaymentProvider(method: string): PaymentProvider {
-    const provider = PAYMENT_PROVIDERS[method];
-    if (!provider) throw new AppError(`Unsupported payment method: ${method}`, 400, 'UNSUPPORTED_PAYMENT_METHOD');
-    return provider;
-}
+import { PaymentInitResult } from './payments.types';
+import { getPaymentProvider } from './getPaymentProvider';
 
 export const paymentsService = {
 
@@ -29,5 +19,26 @@ export const paymentsService = {
 
     async capturePayment(method: string, providerReference: string): Promise<{ status: 'paid' | 'failed' }> {
         return getPaymentProvider(method).capturePayment(providerReference);
+    },
+
+    // Stripe webhook handling
+    async handleStripeWebhookEvent(event: import('stripe').default.Event): Promise<void> {
+        if (event.type === 'payment_intent.succeeded') {
+            const intent = event.data.object as unknown as { id: string; metadata: { orderId?: string }};
+            
+            const orderId = intent.metadata.orderId;
+            if (!orderId) throw new AppError('Webhook event missing orderId in metadata', 400, 'MISSING_ORDER_ID');
+
+            await ordersRepository.updateStatus(orderId, 'confirmed');
+            await ordersRepository.updatePaymentStatus(orderId, 'paid');    
+        }
+
+        if (event.type === 'payment_intent.payment_failed') {
+            const intent = event.data.object as unknown as { id: string; metadata: { orderId?: string } };
+            
+            const orderId = intent.metadata.orderId;
+            if (!orderId) return;
+            await ordersRepository.updatePaymentStatus(orderId, 'failed');
+        }
     },
 };

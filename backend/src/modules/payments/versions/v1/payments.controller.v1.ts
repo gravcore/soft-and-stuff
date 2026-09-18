@@ -5,6 +5,10 @@ import { sendSuccess } from "@/shared/utils/response";
 import { Request, Response, NextFunction } from "express";
 import { paymentsService } from "../../payments.service";
 import { verifyPaypalWebhookSignature } from "../../verifyPaypalWebhookSignature";
+import Stripe from "stripe";
+import { env } from "@/config/env";
+
+const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
 async function assertOwnerShip(req: AuthRequest, order: { user_id: string | null; tracking_id: string }) {
     
@@ -70,4 +74,20 @@ export const paymentsControllerV1 = {
             res.sendStatus(200);
         } catch (err) { next(err); }
     },
+
+    async webhookStripe(req: Request, res: Response) {
+        const signature = req.headers['stripe-signature'] as string;
+        let event: Stripe.Event;
+
+        try {
+            event = stripe.webhooks.constructEvent(req.body, signature, env.STRIPE_WEBHOOK_SECRET);
+        } catch {
+            res.status(400).send('Webhook signature verification failed'); // non-2xx -> stripe retries later
+
+            return;
+        }
+
+        await paymentsService.handleStripeWebhookEvent(event);
+        res.json({ received: true }); // Stripe just needs a 200; body content is arbitrary
+    }
 };
