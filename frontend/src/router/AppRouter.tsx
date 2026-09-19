@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { GuestRoute } from '@/shared/components/GuestRoute/GuestRoute';
 import { ProtectedRoute } from '@/shared/components/ProtectedRoute/ProtectedRoute';
 import { AdminRoute } from '@/shared/components/AdminRoute/AdminRoute';
@@ -24,6 +24,8 @@ const ProfileOrdersPage = lazy(() => import('@/features/profile/pages/ProfileOrd
 const CheckoutPage = lazy(() => import('@/features/checkout/pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })));
 const OrderConfirmationPage = lazy(() => import('@/features/checkout/pages/OrderConfirmationPage').then((m) => ({ default: m.OrderConfirmationPage })));
 const OrderStatusPage = lazy(() => import('@/features/checkout/pages/OrderStatusPage').then((m) => ({ default: m.OrderStatusPage })));
+const AdminOrdersListPage = lazy(() => import('@/features/admin/pages/AdminOrdersListPage/AdminOrdersListPage').then((m) => ({ default: m.AdminOrdersListPage })));
+const AdminOrderDetailPage = lazy(() => import('@/features/admin/pages/AdminOrderDetailPage/AdminOrderDetailPage').then((m) => ({ default: m.AdminOrderDetailPage })));
 
 const wrap = (Component: React.ComponentType) => <Suspense fallback={null}><Component /></Suspense>;
 
@@ -53,6 +55,9 @@ const router = createBrowserRouter([
                             { path: '/admin/products/new', element: wrap(AdminProductFormPage) },
                             { path: '/admin/products/bulk-upload', element: wrap(AdminBulkUploadPage) },
                             { path: '/admin/products/:id/edit', element: wrap(AdminProductFormPage) },
+                            { path: '/admin/orders', element: wrap(AdminOrdersListPage) },
+                            { path: '/admin/orders/:id', element: wrap(AdminOrderDetailPage) },
+                            { path: '/admin', element: <Navigate to="/admin/orders" replace /> },
                         ],
                     },
                 ],

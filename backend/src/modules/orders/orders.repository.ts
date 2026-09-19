@@ -142,26 +142,38 @@ export const ordersRepository = {
     // Admin-only paginated list of every order
     async findAll(
         pagination: PaginationParams,
-        statusFilter?: string
+        statusFilter?: string,
+        search?: string
     ): Promise<{ rows: Order[]; total: number }> {
-        // Optional WHERE clause, only added if an admin filters by status
-        const where = statusFilter ? 'WHERE order_status = $1' : '';
-        const values = statusFilter ? [statusFilter] : [];
+        
+        const conditions: string[] = [];
+        const values: unknown[] = [];
 
-        // idx tracks where LIMIT/OFFSET placeholders start, depending on
-        // whether the WHERE clause used up a placeholder already
-        const limitIdx = values.length + 1;
-        const offsetIdx = values.length + 2;
+        if (statusFilter) {
+            values.push(statusFilter);
+            conditions.push(`o.order_status = $${values.length}`);
+        }
+
+        if (search) {
+            values.push(`%${search}%`);
+            conditions.push(`(o.order_number ILIKE $${values.length} OR o.guest_email ILIKE $${values.length} OR u.email ILIKE $${values.length})`);
+        }
+
+        const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
         const [{ rows }, { rows: countRows }] = await Promise.all([
             db.query<Order>(
-                `SELECT * FROM orders ${where}
-                 ORDER BY created_at DESC
-                 LIMIT $${limitIdx}, OFFSET $${offsetIdx}`,
+                `SELECT o.*, u.email AS user_email 
+                 FROM orders o
+                 LEFT JOIN users u ON u.id = o.user_id
+                 ${where}
+                 ORDER BY o.created_at DESC
+                 LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
                  [...values, pagination.limit, pagination.offset]
             ),
             db.query<{ count: string }>(
-                `SELECT COUNT(*) AS count FROM orders ${where}`,
+                `SELECT COUNT(*) AS count FROM orders o
+                LEFT JOIN users u ON u.id = o.user_id ${where}`,
                 values
             ),
         ]);

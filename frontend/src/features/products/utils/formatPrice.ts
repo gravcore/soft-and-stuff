@@ -8,7 +8,7 @@ function getFormatter(locales: string, currency: string): Intl.NumberFormat {
     return formatterCache.get(key)!;
 }
 
-export const formatPrice = (value: number, valueInCents = true, locales = 'en-US', currency = 'USD') => {
+export const formatPrice = (value: number, valueInCents = true, locales = navigator.language, currency = 'USD') => {
     const formatter = getFormatter(locales, currency);
     const parts = formatter.formatToParts(valueInCents ? value / 100 : value);
 

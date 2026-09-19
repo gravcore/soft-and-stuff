@@ -10,6 +10,7 @@ import { emailService } from '../email/email.service';
 import { CartItemWithProduct } from '../cart/cart.types';
 import { calculateTax } from '../tax/tax.service';
 import { getShippingProvider } from '../shipping/getShippingProvider';
+import { authRepository } from '@/modules/auth/auth.repository';
 
 type OrderTotalsLineItem = Pick<CartItemWithProduct, 'product_id' | 'quantity' | 'price_snapshot' | 'weight_oz'>;
 
@@ -215,8 +216,10 @@ export const ordersService = {
         if (!order || order.user_id !== userId) {
             throw new AppError('Order not found', 404, 'ORDER_NOT_FOUND');
         }
+        
+        const userEmail = order.user_id ? (await authRepository.findById(order.user_id))?.email ?? null : null;
         const items = await ordersRepository.findItemsByOrderId(order.id);
-        return { ...order, items };
+        return { ...order, user_email: userEmail, items };
     },
 
     // Paginated order history for the logged-in user's account page
@@ -228,9 +231,9 @@ export const ordersService = {
 
     // === Admin-only methods ===
 
-    async listAll(req: Request, statusFilter?: string) {
+    async listAll(req: Request, statusFilter?: string, search?: string) {
         const pagination = parsePagination(req);
-        const { rows, total } = await ordersRepository.findAll(pagination, statusFilter);
+        const { rows, total } = await ordersRepository.findAll(pagination, statusFilter, search);
         return { orders: rows, meta: buildMeta(total, pagination) };
     },
 

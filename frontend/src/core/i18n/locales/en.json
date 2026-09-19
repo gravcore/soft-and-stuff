@@ -313,5 +313,24 @@
     "paymentFailed": "Payment failed",
     "payNow": "Pay now",
     "cardStripe": "Card through Stripe"
+  },
+  "admin": {
+    "orders": {
+      "title": "Orders",
+      "searchPlaceholder": "Order number or email",
+      "allStatuses": "All statuses",
+      "loading": "Loading...",
+      "empty": "No orders match these filters.",
+      "registeredCustomer": "Registered customer",
+      "notFound": "Order not found",
+      "confirmCancel": "Cancel this order?",
+      "customer": "Customer",
+      "shipTo": "Ship to",
+      "payment": "Payment",
+      "noPaymentYet": "No payment method attached yet",
+      "notes": "Notes",
+      "items": "Items",
+      "total": "Total"
+    }
   }
 }

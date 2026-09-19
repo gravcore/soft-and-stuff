@@ -69,7 +69,7 @@ export const ordersControllerV1 = {
     
     async listAll(req: AuthRequest, res: Response, next: NextFunction) {
         try {
-            const { orders, meta } = await ordersService.listAll(req, req.query.status as string | undefined);
+            const { orders, meta } = await ordersService.listAll(req, req.query.status as string | undefined, req.query.search as string | undefined);
             sendSuccess(res, { orders }, 200, meta);
         } catch (err) { next(err); }
     },
