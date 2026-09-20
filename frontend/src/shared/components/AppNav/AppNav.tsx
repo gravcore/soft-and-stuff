@@ -2,7 +2,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, useScroll, useMotionValueEvent, useTransform, MotionValue } from 'motion/react';
 import { NAV_ITEMS } from './navItems';
-import { LogIn, ShoppingBag, type LucideIcon } from 'lucide-react';
+import { LogIn, Search, ShoppingBag, type LucideIcon } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import { useState } from 'react';
 import { useAuthContext } from '@/core/auth/AuthContext';
@@ -35,6 +35,7 @@ export function AppNav({ cartCount }: { cartCount?: number }) {
                 animate={{ y: hidden ? '100%' : '0%' }}
                 transition={{ duration: 0.25, ease: 'easeInOut' }}
                 className="md:hidden fixed bottom-0 inset-x-0 z-40 flex justify-around border-t border-border bg-surface/70 backdrop-blur-lg py-2">
+                    <NavItem to="/products" icon={Search} labelKey='nav.search' t={t} />
                     {NAV_ITEMS.map((item) => <NavItem key={item.to} {...item} t={t} cartCount={cartCount} />)}
                     
                     {user 
@@ -64,6 +65,7 @@ export function AppNav({ cartCount }: { cartCount?: number }) {
                     </div>
                     
                     <nav className="flex items-center gap-1">
+                        <NavItem to="/products" icon={Search} labelKey='nav.search' t={t} horizontal />
                         {NAV_ITEMS.map((item) => <NavItem key={item.to} {...item} t={t} cartCount={cartCount} horizontal />)}
                         
                         {user 

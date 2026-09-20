@@ -91,6 +91,7 @@
     }
   },
   "nav": {
+    "search": "Search",
     "home": "Home",
     "categories": "Categories",
     "cart": "Cart",

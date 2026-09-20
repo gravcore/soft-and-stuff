@@ -132,6 +132,7 @@ export function ProductListPage() {
 
                             <input
                                 value={search}
+                                autoFocus
                                 onChange={(e) => updateParam('search', e.target.value || null)}
                                 placeholder={t('products.searchPlaceholder', 'Search products...')}
                                 className="w-full rounded-full border border-border bg-surface-2 
