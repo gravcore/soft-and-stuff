@@ -101,7 +101,7 @@
   "common": {
     "back": "Atrás",
     "brandSubtitle": "Todo, en un solo lugar",
-    "brandTitle": "Suave"
+    "brandTitle": "Soft&Stuff"
   },
   "profile": {
     "firstName": "Nombre de pila",
@@ -208,5 +208,14 @@
     "dark": "Oscuro",
     "light": "Claro",
     "system": "Sistema"
+  },
+  "admin": {
+    "orders": {
+      "allStatuses": "Todos los estados",
+      "confirmCancel": "¿Cancelar este pedido?",
+      "customer": "Cliente",
+      "empty": "Ningún pedido coincide con estos filtros.",
+      "items": "Elementos"
+    }
   }
 }

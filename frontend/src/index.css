@@ -21,7 +21,7 @@
     --radius-md: 18px;
     --radius-pill: 999px;
 
-    --accent: #8FBF9F;
+    --accent: #5B5FEF;
     --accent-admin: #5B5FEF;
     --danger: #E5484D;
     --success: #2FAE60;
@@ -76,6 +76,15 @@ body {
     background: var(--surface);
     border: 2px solid var(--accent);
     cursor: pointer;
+}
+
+.hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* old Edge/IE */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, new Edge */
 }
 
 /* Fade animation */

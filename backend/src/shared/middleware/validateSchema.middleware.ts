@@ -25,9 +25,12 @@ export const validateSchema =
         }
 
         // Change the request data to the stripped version (removes unknown fields)
-        if (target === 'query') {
-            Object.keys(req.query).forEach((key) => delete req.query[key]);
-            Object.assign(req.query, parsed.data as Record<string, unknown>);
+        if (target === 'query') {            
+            Object.defineProperty(req, 'query', {
+                value: parsed.data, // from now on, 'req.query' always returns this object
+                writable: true, // allow req.query to be reassigned again
+                configurable: true, // allows this property definition itself to be changed/redefined again if needed
+            });
         } else if (target === 'body') {
             req.body = parsed.data;
         } else {

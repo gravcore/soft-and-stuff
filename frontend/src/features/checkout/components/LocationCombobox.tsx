@@ -115,13 +115,13 @@ export function LocationCombobox({ value, options, onSelect, placeholder, disabl
                                 onChange={(e) => setSearch(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder={t('checkout.searchOrType', 'Search or type your own...')}
-                                className="w-full rounded-lg bg-transparent py-1.5 pl-6 pr-2 text-sm
+                                className="w-full rounded-lg bg-transparent py-1.5 pl-9 pr-2 text-sm
                                 text-ink outline-none"
                             />
                         </div>
 
                         {/* List of options */}
-                        <div className="max-h-48 overflow-y-auto">
+                        <div className="max-h-48 overflow-y-auto hide-scrollbar">
                             {loading && <p className="px-4 py-3 text-xs text-muted">
                                 {t('checkout.loadingOptions', 'Loading...')}    
                             </p>}

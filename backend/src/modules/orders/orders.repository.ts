@@ -58,7 +58,7 @@ export const ordersRepository = {
     async createItem(client: PoolClient, input: CreateOrderItemParams): Promise<void> {
         await client.query(
             `INSERT INTO order_items
-                (order_id, product_id, product_name, product_sku, quantity, unit_price, total_price)
+                (order_id, product_id, product_name, product_sku, quantity, price_snapshot, total)
             VALUES
                 ($1,$2,$3,$4,$5,$6,$7)`,
             [
@@ -229,7 +229,7 @@ export const ordersRepository = {
 
     async findItemWeightsByOrderId(orderId: string) {
         const { rows } = await db.query<{ product_id: string; quantity: number; price_snapshot: number; weight_oz: number | null }>(
-            `SELECT oi.product_id, oi.quantity, oi.unit_price AS price_snapshot, p.weight_oz
+            `SELECT oi.product_id, oi.quantity, oi.price_snapshot AS price_snapshot, p.weight_oz
             FROM order_items oi
             LEFT JOIN products p ON p.id = oi.product_id
             WHERE oi.order_id = $1`,

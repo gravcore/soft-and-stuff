@@ -25,7 +25,7 @@ export function ShippingAddressSummaryCard({ address, onEdit }: ShippingAddressS
                 <button 
                     type="button" 
                     onClick={onEdit}
-                    className="flex items-center gap-1 text-xs font-medium text-accent-admin hover:underline"
+                    className="flex items-center gap-1 ml-2 text-xs font-medium text-accent-admin hover:underline"
                 >
                     <Pencil size={12} />
                     {t('checkout.edit', 'Edit')}

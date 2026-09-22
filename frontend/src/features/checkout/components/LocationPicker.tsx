@@ -1,11 +1,12 @@
 import type { ShippingAddress } from "../types/checkout.types";
 import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import countries from 'world-countries';
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useCitiesForState, useStatesForCountry } from "../hooks/useLocationLookup";
-import { MapPin, Navigation, Search } from "lucide-react";
+import { ChevronDown, MapPin, Navigation, Search } from "lucide-react";
 import { LocationCombobox } from "./LocationCombobox";
 import styles from "./LocationPicker.module.css";
 
@@ -17,6 +18,7 @@ interface LocationPickerProps {
 const DEFAULT_CENTER: [number, number] = [14.634, -90.5069]
 const DEFAULT_ZOOM = 13;
 
+// Icon to select in the map
 const pinIcon = L.divIcon({
     className: '',
     html: `
@@ -86,7 +88,6 @@ export function LocationPicker({ onAddressResolved, initialAddress }: LocationPi
     // when that value actually changes
     // reconciliation: making two different sources of the same information agree with each other.
     const [reconciledState, setReconciledState] = useState<string | undefined>(undefined);
-
     
     const updateField = useCallback((partial: Partial<ShippingAddress>) => {
         setFields((prev) => ({ ...prev, ...partial }));
@@ -96,9 +97,43 @@ export function LocationPicker({ onAddressResolved, initialAddress }: LocationPi
     // Reconciles a state name back to its code whenever one is missing
     // For example when editing an existing order or because a geocoded address
     if (fields.state && fields.state !== reconciledState && statesQuery.data) {
-        const match = statesQuery.data.find((s) => s.name.toLowerCase() === fields.state!.toLowerCase());
-        setReconciledState(fields.state);
-        if (match) setStateCode(match.iso2);
+        
+        // Strips generic words like "Department" before comparing so "Guatemala Department" and "Guatemala" count as the same thing
+        const normalize = (s: string) =>
+            s.toLowerCase().replace(/\b(department|state|province|region|departamento)\b/g, '').trim(); 
+
+        const target = normalize(fields.state);
+        
+        // exact match
+        const exactMatch = statesQuery.data.find((s) => normalize(s.name) === target);
+
+        // when there's no exact match
+        let looseMatch;
+        if (!exactMatch) {
+            const candidates = statesQuery.data.filter((s) => {
+                const name = normalize(s.name);
+                return name.includes(target) || target.includes(name);
+            });
+
+            candidates.sort((a, b) => {
+                // "distance" = how many chars longer/shorter than target, sign removed (Math.abs)
+                // e.g. target "virginia" (8): "west virginia" (13) -> distance 5
+                // smaller distance wins, sorts first (negative result = a comes first)
+                return Math.abs(normalize(a.name).length - target.length) - Math.abs(normalize(b.name).length - target.length);
+            });
+
+            looseMatch = candidates[0]
+        }
+
+        const match = exactMatch ?? looseMatch;
+
+        if (match) {
+            setStateCode(match.iso2);
+            updateField({ state: match.name }); // keep the display text in sync with whatever actually got matched
+            setReconciledState(match.name);
+        } else {
+            setReconciledState(fields.state);
+        }
     }
 
     function handleCountryChange(countryCode: string) {
@@ -127,8 +162,22 @@ export function LocationPicker({ onAddressResolved, initialAddress }: LocationPi
                 country: place.address.country_code?.toUpperCase() ?? undefined,
                 zip: place.address.postcode ?? undefined,
             });
+
+            // Nominatim sometimes includes a real ISO code for th state, like "GT-GU"
+            // if it's there, trust it directly instead of guessing from the name
+            const isoCode = place.address['ISO3166-2-lvl4'];
+            const stateCodeFromIso = isoCode?.split('-')[1];
+
+            if (stateCodeFromIso) {
+                setStateCode(stateCodeFromIso);
+                const matchedState = statesQuery.data?.find((s) => s.iso2 === stateCodeFromIso);
+
+                if (matchedState) updateField({ state: matchedState.name });
+            } else {
+                setStateCode(null);
+            }
         }
-    }, [updateField]);
+    }, [statesQuery.data, updateField]);
 
     async function handleSearch() {
         if (!searchQuery.trim()) return;
@@ -265,17 +314,21 @@ export function LocationPicker({ onAddressResolved, initialAddress }: LocationPi
             <label className="block text-xs font-medium text-muted">
                 {t('checkout.country', 'Country')}
 
-                <select 
-                    value={fields.country ?? ''}
-                    onChange={(e) => handleCountryChange(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-surface-2 p-3
-                    text-sm text-ink"
-                >
-                    <option value="" disabled>{t('checkout.selectCountry', 'Select a country')}</option>
-                    {countriesList.map((country) => (
-                        <option key={country.code} value={country.code}>{country.label}</option>
-                    ))}
-                </select>
+                <div className="relative">
+                    <select 
+                        value={fields.country ?? ''}
+                        onChange={(e) => handleCountryChange(e.target.value)}
+                        className="mt-1 w-full rounded-xl bg-surface-2 p-3
+                        text-sm text-ink appearance-none pr-10"
+                    >
+                        <option value="" disabled>{t('checkout.selectCountry', 'Select a country')}</option>
+                        {countriesList.map((country) => (
+                            <option key={country.code} value={country.code}>{country.label}</option>
+                        ))}
+                    </select>
+
+                    <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted" />
+                </div>
             </label>
 
             {/* Departament/State */}
@@ -311,35 +364,6 @@ export function LocationPicker({ onAddressResolved, initialAddress }: LocationPi
                     />
                 </div>
             </label>
-
-            {/* Reference */}
-            <label className="block text-xs font-medium text-muted">
-                {t('checkout.reference', 'Detailed address and reference (house color, door color, etc)')}
-
-                <input 
-                    value={fields.reference ?? ''}
-                    onChange={(e) => updateField({ reference: e.target.value })}
-                    className="mt-1 w-full rounded-xl bg-surface-2 p-3 text-sm
-                    text-ink placeholder:text-muted"
-                    placeholder={t('checkout.referencePlaceholder', 'e.g. 15th Av. 2nd Street ... Green house')}
-                />
-            </label>
-
-            {/* Zip code */}
-            <label className="block text-xs font-medium text-muted">
-                {t('checkout.zip', 'Postal code (optional)')}
-
-                <input 
-                    value={fields.zip ?? ''}
-                    onChange={(e) => updateField({ zip: e.target.value })}
-                    className="mt-1 w-full rounded-xl bg-surface-2 p-3 text-sm
-                    text-ink placeholder:text-muted"
-                    placeholder={t('checkout.zipPlaceholder', 'e.g. 01001')}
-                />
-            </label>
         </div>
     );
 }
-
-
-    

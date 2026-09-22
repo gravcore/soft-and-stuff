@@ -26,8 +26,8 @@ export interface OrderItem {
     product_name: string;
     product_sku: string | null;
     quantity: number;
-    unit_price: number;
-    total_price: number;
+    price_snapshot: number;
+    total: number;
     created_at: Date;
 }
 

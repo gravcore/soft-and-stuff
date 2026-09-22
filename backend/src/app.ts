@@ -37,7 +37,7 @@ export const createApp = () => {
         },
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token', 'Idempotency-Key'],
     }));
 
     // Stripe needs receive the raw body for signature

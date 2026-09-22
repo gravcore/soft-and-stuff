@@ -52,7 +52,7 @@ const mapProduct = (raw: RawProduct): Product => ({
 });
 
 export const fetchProducts = async (filters: ProductFilters): Promise<PaginatedProducts> => {
-    const { data } = await httpClient.get('/products', { params: filters });
+    const { data } = await httpClient.get('/products', { params: { ...filters, sort: filters.sort?.join(',') } });
     return {
         products: data.data.products.map(mapProduct),
         meta: data.meta,

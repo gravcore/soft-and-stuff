@@ -1,16 +1,17 @@
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, useScroll, useMotionValueEvent, useTransform, MotionValue } from 'motion/react';
 import { NAV_ITEMS } from './navItems';
 import { LogIn, Search, ShoppingBag, type LucideIcon } from 'lucide-react';
 import type { TFunction } from 'i18next';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthContext } from '@/core/auth/AuthContext';
 
 export function AppNav({ cartCount }: { cartCount?: number }) {
     const { t } = useTranslation();
     const { scrollY } = useScroll();
     const { user } = useAuthContext();
+    const navigate = useNavigate();
 
     // Desktop: transparent at top, blurred surface once scrolled
     const headerOpacity = useTransform(scrollY, [0, 80], [0, 0.7]); // Interpolates scroll values and opacity values
@@ -27,6 +28,24 @@ export function AppNav({ cartCount }: { cartCount?: number }) {
         if (diff > 0) setHidden(true); // scrolling down -> hide
         else if (diff < 0) setHidden(false); // scrolling up -> reveal
     });
+
+    useEffect(() => {
+        const handleSearchShortcut = (e: KeyboardEvent) => {
+            if (e.key !== '/') return;
+
+            const target = e.target as HTMLElement;
+            const isTyping = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+            if (isTyping) return; // dont intercept while typing into an input or textarea
+
+            e.preventDefault();
+
+            navigate('/products');           
+        }
+
+        document.addEventListener('keydown', handleSearchShortcut);
+        return () => document.removeEventListener('keydown', handleSearchShortcut);
+    }, [navigate]);
 
     return (
         <>

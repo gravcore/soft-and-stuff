@@ -133,9 +133,9 @@ export function AdminOrderDetailPage() {
                             {item.product_sku && <p className="text-xs text-muted">SKU {item.product_sku}</p>}
                         </div>
 
-                        <p className="text-muted">{item.quantity} × {formatPrice(item.unit_price, true, navigator.language, order.currency).full}</p>
+                        <p className="text-muted">{item.quantity} × {formatPrice(item.price_snapshot, true, navigator.language, order.currency).full}</p>
                         
-                        <p className="font-medium text-ink">{formatPrice(item.total_price, true, navigator.language, order.currency).full}</p>
+                        <p className="font-medium text-ink">{formatPrice(item.total, true, navigator.language, order.currency).full}</p>
                     </div>
                 ))}
             </div>

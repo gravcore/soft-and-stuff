@@ -57,7 +57,10 @@ export const productFiltersSchema = z.object({
     search: z.string().optional(),
     minPrice: z.coerce.number().int().min(0).optional(),
     maxPrice: z.coerce.number().int().min(0).optional(),
-    sort: z.enum([ 'price_asc', 'price_desc', 'newest', 'popular' ]).optional(),
+    sort: z.preprocess(
+        (val) => (typeof val === 'string' ? val.split(',') : val),
+        z.array(z.enum(['price_asc', 'price_desc', 'newest', 'popular'])).optional(),
+    ),
 });
 
 export const createCategorySchema = z.object({

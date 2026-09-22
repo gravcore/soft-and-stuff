@@ -308,12 +308,17 @@
     "trackButton": "Track order",
     "orderNumbered": "Order number:",
     "status": "Status:",
+    "card": "Credit/Debit card",
     "cardNumber": "Card number",
     "monthYear": "MM/YY",
     "cvv": "CVV",
     "paymentFailed": "Payment failed",
     "payNow": "Pay now",
-    "cardStripe": "Card through Stripe"
+    "cardStripe": "Card through Stripe",
+    "emailPlaceholder": "john@email.com",
+    "fullNamePlaceholder": "e.g. John Rivers...",
+    "phonePlaceholder": "+502 1234 5678",
+    "addressLine1Placeholder": "Central Park 15th Av. 2nd Street..."
   },
   "admin": {
     "orders": {
