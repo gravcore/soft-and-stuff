@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCitiesOfState, getStatesOfCountry } from '@countryStatecity/countries-browser';
+import { getCitiesOfState, getStatesOfCountry } from '@countrystatecity/countries-browser';
 
 // enabled: false until countryCode exists
 export const useStatesForCountry = (countryCode: string | undefined) =>
