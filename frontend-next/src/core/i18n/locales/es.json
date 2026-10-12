@@ -1,0 +1,221 @@
+{
+  "errors": {
+    "GENERIC": "Algo salió mal. Inténtalo de nuevo.",
+    "INTERNAL_ERROR": "Algo salió mal. \nPor favor inténtalo de nuevo."
+  },
+  "auth": {
+    "login": {
+      "title": "Bienvenido de nuevo",
+      "subtitle": "Inicia sesión para continuar",
+      "passwordPlaceholder": "Ingresa tu contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submit": "Iniciar sesión",
+      "submitting": "Iniciando sesión…",
+      "noAccount": "¿No tienes cuenta?",
+      "createOne": "Crea una",
+      "orContinueWith": "O continúa con",
+      "brandSubtitle": "Inicia sesión para continuar justo donde lo dejaste.",
+      "welcomeBack": "Bienvenido de nuevo",
+      "brandTitle": "Soft&Stuff"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Empecemos",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "passwordPlaceholder": "Al menos 8 caracteres",
+      "submit": "Crear cuenta",
+      "submitting": "Creando cuenta…",
+      "hasAccount": "¿Ya tienes cuenta?",
+      "signIn": "Inicia sesión",
+      "brandSubtitle": "Cree una cuenta para realizar un seguimiento de los pedidos, guardar favoritos y pagar más rápido",
+      "brandTitle": "Únete a Soft&Stuff",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Vuelva a ingresar su contraseña",
+      "firstNamePlaceholder": "Nombre",
+      "lastNamePlaceholder": "Apellido",
+      "hidePassword": "Ocultar contraseña",
+      "showPassword": "Mostrar contraseña"
+    },
+    "errors": {
+      "INVALID_EMAIL": "Ingresa un correo electrónico válido",
+      "PASSWORD_REQUIRED": "La contraseña es obligatoria",
+      "PASSWORD_EMPTY": "La contraseña no debe estar vacía",
+      "PASSWORD_TOO_SHORT": "Al menos 8 caracteres",
+      "PASSWORD_TOO_LONG": "La contraseña debe tener menos de 72 caracteres",
+      "PASSWORD_NO_UPPERCASE": "Incluye al menos una mayúscula",
+      "PASSWORD_NO_NUMBER": "Incluye al menos un número",
+      "FIRST_NAME_REQUIRED": "El nombre es obligatorio",
+      "FIRST_NAME_EMPTY": "El nombre no debe estar vacío",
+      "FIRST_NAME_TOO_LONG": "El nombre debe tener menos de 100 caracteres",
+      "STRING_REQUIRED": "El apellido debe ser un texto",
+      "LAST_NAME_TOO_LONG": "El apellido debe tener menos de 100 caracteres",
+      "REQUIRED": "Este campo es obligatorio",
+      "CONFIRM_PASSWORD_REQUIRED": "Por favor confirma tu contraseña",
+      "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden",
+      "INVALID_OTP": "Código no válido o caducado",
+      "NOT_VERIFIED": "La sesión expiró, por favor comienza de nuevo.",
+      "TOO_MANY_ATTEMPTS": "Demasiados intentos, solicita un nuevo código"
+    },
+    "common": {
+      "apple": "Apple",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "Introduce tu correo electrónico",
+      "google": "Google",
+      "password": "Contraseña"
+    },
+    "forgot": {
+      "backToLogin": "Volver a iniciar sesión",
+      "brandSubtitle": "No te preocupes, te ayudaremos a volver a entrar.",
+      "brandTitle": "¿Olvidaste tu contraseña?",
+      "codeExpired": "Código caducado",
+      "codeSentTo": "Código enviado a",
+      "confirmPassword": "Confirmar Contraseña",
+      "confirmPasswordPlaceholder": "Confirmar nueva contraseña",
+      "emailSubtitle": "Introduce tu email y te enviaremos un código",
+      "emailTitle": "Restablece tu contraseña",
+      "expired": "Venció",
+      "newPassword": "Nueva contraseña",
+      "newPasswordPlaceholder": "Ingrese una nueva contraseña",
+      "otpSubtitle": "Revisa tu bandeja de entrada para ver el código de 6 dígitos",
+      "otpTitle": "Introduce el código",
+      "passwordSubtitle": "Elige algo que no hayas usado antes",
+      "passwordTitle": "Establecer una nueva contraseña",
+      "resendCode": "Reenviar código",
+      "savePassword": "Cambiar contraseña",
+      "saving": "Cambiando...",
+      "sendCode": "Enviar código",
+      "sending": "Enviando...",
+      "verify": "Verificar",
+      "verifying": "Verificando..."
+    }
+  },
+  "nav": {
+    "home": "Inicio",
+    "categories": "Categorías",
+    "cart": "Carrito",
+    "profile": "Perfil",
+    "theme": "Tema",
+    "login": "Acceso"
+  },
+  "common": {
+    "back": "Atrás",
+    "brandSubtitle": "Todo, en un solo lugar",
+    "brandTitle": "Soft&Stuff"
+  },
+  "profile": {
+    "firstName": "Nombre de pila",
+    "guest": "Invitado",
+    "lastName": "Apellido",
+    "loggingOut": "Cerrando sesión...",
+    "logout": "Cerrar sesión",
+    "myOrders": "Mis pedidos",
+    "paymentMethods": "Métodos de pago",
+    "settings": "Ajustes",
+    "shippingAddress": "Dirección de envío",
+    "title": "Perfil"
+  },
+  "settings": {
+    "language": "Idioma",
+    "theme": "Tema",
+    "title": "Ajustes"
+  },
+  "footer": {
+    "contact": "Contacto",
+    "legal": "Legal",
+    "privacy": "política de privacidad",
+    "returns": "Devoluciones",
+    "rights": "Reservados todos los derechos.",
+    "shop": "Comercio",
+    "support": "Apoyo",
+    "tagline": "Todo, en un solo lugar",
+    "terms": "Términos de servicio"
+  },
+  "home": {
+    "featured": "Presentado",
+    "heroSubtitle": "Productos de calidad, entregados rápidamente.",
+    "heroSubtitleWelcome": "Bienvenido de nuevo, {{name}}",
+    "heroTitle": "Todo, en un solo lugar",
+    "shopAll": "Comprar todos los productos",
+    "viewAll": "Ver todo"
+  },
+  "products": {
+    "addToCart": "añadir a la cesta",
+    "admin": {
+      "active": "Activo (visible para los clientes)",
+      "addTitle": "Agregar producto",
+      "comparePrice": "Comparar precio",
+      "createCategory": "Crear {{name}}",
+      "creatingCategory": "Creando...",
+      "description": "Descripción",
+      "descriptionPlaceholder": "Describe las características y detalles del producto...",
+      "editTitle": "Editar producto",
+      "errors": {
+        "FILE_TOO_LARGE": "Archivo demasiado grande"
+      },
+      "featured": "Presentado",
+      "images": "Imágenes del producto",
+      "name": "Nombre del producto",
+      "namePlaceholder": "p.ej. \nAirPods Pro",
+      "noCategories": "No se encontraron categorías",
+      "price": "Precio",
+      "save": "Guardar producto",
+      "saving": "Ahorro...",
+      "searchCategory": "Busque o escriba una nueva categoría...",
+      "searching": "Búsqueda...",
+      "selectCategory": "Selecciona una categoría",
+      "sku": "SKU",
+      "skuPlaceholder": "p.ej. \nAPLICACIÓN-2ND-GEN",
+      "slug": "Babosa",
+      "slugPlaceholder": "p.ej. \nairpods-pro",
+      "stock": "Existencias",
+      "upload": "Subir",
+      "uploadFail": "{{name}}: {{error}}",
+      "uploadFailedGeneric": "Error al subir",
+      "uploadingCount": "{{count}} subiendo...",
+      "videos": "Vídeos de productos"
+    },
+    "all": "Todo",
+    "cancel": "Cancelar",
+    "category": "Categoría",
+    "color": "Color",
+    "delete": "Borrar",
+    "deleteThisProduct": "¿Eliminar este producto?",
+    "filters": "Filtros",
+    "inStock": "En stock",
+    "lowStock": "Sólo queda {{stock}}",
+    "noSku": "Sin SKU",
+    "notFound": "No se encontraron productos.",
+    "outOfStock": "Agotado",
+    "priceMax": "máx.",
+    "priceMin": "mín.",
+    "priceRange": "Gama de precios",
+    "sale": "Venta",
+    "searchPlaceholder": "Buscar productos...",
+    "stock": "{{stock}} en stock",
+    "thisCantBeUndoneFromHere": "Esto se puede deshacer desde aquí.",
+    "title": "Productos"
+  },
+  "sort": {
+    "label": "Clasificar",
+    "labelWithCount": "Ordenar · {{count}}",
+    "newest": "El más nuevo",
+    "popular": "Más Popular",
+    "priceAsc": "Precio: de menor a mayor",
+    "priceDesc": "Precio: de mayor a menor"
+  },
+  "theme": {
+    "dark": "Oscuro",
+    "light": "Claro",
+    "system": "Sistema"
+  },
+  "admin": {
+    "orders": {
+      "allStatuses": "Todos los estados",
+      "confirmCancel": "¿Cancelar este pedido?",
+      "customer": "Cliente",
+      "empty": "Ningún pedido coincide con estos filtros.",
+      "items": "Elementos"
+    }
+  }
+}

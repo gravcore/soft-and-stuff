@@ -1,0 +1,19 @@
+.titleBar { 
+    -webkit-app-region: drag;
+    height: 32px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    align-items: center;
+    user-select: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+ }
+
+.titleBar button {
+    -webkit-app-region: no-drag;
+    border: none;
+}

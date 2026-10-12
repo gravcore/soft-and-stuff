@@ -1,9 +1,11 @@
 packages:
   - 'frontend'
   - 'backend'
+  - 'frontend-next'
 allowBuilds:
   '@parcel/watcher': false
   '@scarf/scarf': false
+  '@swc/core': set this to true or false
   esbuild: false
   unrs-resolver: false
 minimumReleaseAgeExclude:

@@ -1,0 +1,39 @@
+{
+  "name": "frontend-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.5.7",
+    "@paypal/react-paypal-js": "^10.4.1",
+    "@stripe/stripe-js": "^9.16.0",
+    "@tanstack/react-query": "^5.101.3",
+    "axios": "^1.18.1",
+    "imagekitio-react": "^4.3.0",
+    "lucide-react": "^1.26.0",
+    "motion": "^12.42.2",
+    "next": "16.3.6",
+    "next-intl": "^4.14.7",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-hook-form": "^7.83.0",
+    "zod": "^4.6.5",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  },
+  "packageManager": "pnpm@10.32.1"
+}
