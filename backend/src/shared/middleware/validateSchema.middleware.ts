@@ -9,7 +9,7 @@ export const validateSchema =
     (req: Request, _res: Response, next: NextFunction) => {
 
         // Check data with the schema, converts in an object, and if something fail not throw an error
-        const parsed = schema.safeParse(req[target]);
+        const parsed = schema.safeParse(req[target] ?? {});
 
         if (!parsed.success) {
 
@@ -25,6 +25,17 @@ export const validateSchema =
         }
 
         // Change the request data to the stripped version (removes unknown fields)
-        (req as any)[target] = parsed.data;
+        if (target === 'query') {            
+            Object.defineProperty(req, 'query', {
+                value: parsed.data, // from now on, 'req.query' always returns this object
+                writable: true, // allow req.query to be reassigned again
+                configurable: true, // allows this property definition itself to be changed/redefined again if needed
+            });
+        } else if (target === 'body') {
+            req.body = parsed.data;
+        } else {
+            req.params = parsed.data as Record<string, string>;
+        }
+
         next();
     }

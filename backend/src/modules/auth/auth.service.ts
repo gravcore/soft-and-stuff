@@ -1,10 +1,12 @@
 import { AppError } from "@/shared/errors/AppError";
 import { authRepository } from "./auth.repository";
-import { LoginInput, RegisterInput, TokenPair } from "./auth.types";
-import { generateToken, hashPassword, hashToken, verifyPassword } from "@/shared/utils/crypto";
-import { sendEmail } from "@/shared/adapters/mailer";
+import { LoginInput, OAuthProfile, RegisterInput, TokenPair } from "./auth.types";
+import { generateOtp, generateToken, hashPassword, hashToken, verifyPassword } from "@/shared/utils/crypto";
 import jwt from 'jsonwebtoken';
 import { env } from '@/config/env';
+import { emailService } from "../email/email.service";
+
+const OTP_TTL_MS = env.OTP_TTL_MINUTES * 60 * 1000;
 
 export const authService = {
 
@@ -25,10 +27,9 @@ export const authService = {
         });
 
         // Send a welcome email
-        sendEmail({
-            to: user.email,
-            subject: 'Welcome to the store',
-            html: `<p>Hi ${user.first_name} thanks for joining!</p>`
+        emailService.sendWelcomeEmail({
+            to: input.email,
+            firstName: input.firstName,
         }).catch(console.error);
 
         return user;
@@ -98,5 +99,73 @@ export const authService = {
         });
 
         return { accessToken, refreshToken };
-    }
+    },
+
+    async loginWithOAuth(profile: OAuthProfile, deviceInfo: string): Promise<TokenPair & { userId: string }> {
+        
+        // 1. Check if already linked this exact provider account before to log them directly
+        const linked = await authRepository.findByOAuthAccount(profile.provider, profile.providerId);
+        let user = linked ? await authRepository.findById(linked.user_id) : null;
+
+        if (!user) {
+            // 2. Check if a user with this email already exists (e.g. signed up with password, or a different provider)
+            const byEmail = await authRepository.findByEmail(profile.email);
+            if (byEmail) {
+                user = byEmail;
+                await authRepository.linkOAuthAccount(user.id, profile.provider, profile.providerId);
+            } else {
+                user = await authRepository.createOAuthUser({ email: profile.email, firstName: profile.firstName, lastName: profile.lastName, avatarUrl: profile.avatarUrl });
+                await authRepository.linkOAuthAccount(user.id, profile.provider, profile.providerId);
+            }
+        }
+
+        const tokens = await authService._issueTokenPair(user.id, user.user_role, deviceInfo);
+        return { ...tokens, userId: user.id };
+    },
+
+    async requestPasswordReset(email: string): Promise<{ expiresInSeconds: number }> {
+        const user = await authRepository.findByEmail(email);
+        const result = { expiresInSeconds: OTP_TTL_MS / 1000 };
+        if (!user) return result; // same result either way, don't leak whether the email exists
+
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+        const recentCount = await authRepository.countRecentOtps(user.id, oneHourAgo);
+        if (recentCount >= 3) return result;
+
+        const otp = generateOtp();
+        const expiresAt = new Date(Date.now() + OTP_TTL_MS);
+        await authRepository.savePasswordResetOtp(user.id, hashToken(otp), expiresAt);
+        await emailService.sendPasswordResetOtp({ to: user.email, otp, ttlMinutes: env.OTP_TTL_MINUTES });
+        return result;
+    },
+
+    async verifyResetOtp(email: string, otp: string): Promise<void> {
+        const user = await authRepository.findByEmail(email);
+        if (!user) throw new AppError('Invalid or expired code', 400, 'INVALID_OTP');
+
+        const active = await authRepository.findActiveOtp(user.id);
+        if (!active) throw new AppError('Invalid or expired code', 400, 'INVALID_OTP');
+
+        if (active.attempts >= 5) throw new AppError('Too many attempts, request a new code', 429, 'TOO_MANY_ATTEMPTS');
+
+        if (hashToken(otp) !== active.otp_hash) {
+            await authRepository.incrementOtpAttempts(active.id);
+            throw new AppError('Invalid or expired code', 400, 'INVALID_OTP');
+        }
+
+        await authRepository.markOtpVerified(active.id);
+    },
+
+    async resetPassword(email: string, newPassword: string): Promise<void> {
+        const user = await authRepository.findByEmail(email);
+        if (!user) throw new AppError('Session expired, please start again', 400, 'NOT_VERIFIED');
+
+        const verified = await authRepository.findVerifiedOtp(user.id);
+        if (!verified) throw new AppError('Session expired, please start again', 400, 'NOT_VERIFIED');
+
+        await authRepository.markOtpUsed(verified.id);
+        const passwordHash = await hashPassword(newPassword);
+        await authRepository.updatePassword(user.id, passwordHash);
+        await authRepository.deleteAllUserTokens(user.id); // force logout everywhere
+    },
 }
