@@ -6,6 +6,7 @@ export interface Products {
     slug: string,
     sku: string,
     stock: number,
+    weight_oz: number | null;
     is_active: boolean,
     is_featured: boolean,
     price_in_cents: number,
@@ -23,5 +24,5 @@ export interface ProductFilters {
     search?: string,
     minPrice?: number,
     maxPrice?: number,
-    sort: 'price_asc' | 'price_desc' | 'newest' | 'popular',
+    sort?: ('price_asc' | 'price_desc' | 'newest' | 'popular')[],
 }

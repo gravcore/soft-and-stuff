@@ -1,15 +1,16 @@
 import { db } from "@/config/database";
 import { hashToken } from "@/shared/utils/crypto";
 
-interface UserRow {
-    id: string;
-    email: string;
-    password_hash: string | null;
-    first_name: string | null;
-    last_name: string | null;
-    user_role: 'customer' | 'admin',
-    is_verified: boolean,
-    created_at: Date
+export interface UserRow {
+  id: string; 
+  email: string; 
+  password_hash: string | null;
+  first_name: string | null; 
+  last_name: string | null;
+  avatar_url: string | null;
+  user_role: 'customer' | 'admin'; 
+  is_verified: boolean; 
+  created_at: Date;
 }
 
 interface CreateUserInput {
@@ -53,7 +54,7 @@ export const authRepository = {
     async findById(id: string): Promise<Omit<UserRow, 'password_hash'> | null> {
         const { rows } = await db.query<Omit<UserRow, 'password_hash'>>(
             `
-                SELECT id, email, first_name, last_name, user_role, is_verified, created_at
+                SELECT id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at
                 FROM users
                 WHERE id = $1 
                 LIMIT 1
@@ -69,7 +70,7 @@ export const authRepository = {
             `
                 INSERT INTO users (email, password_hash, first_name, last_name)
                 VALUES ($1, $2, $3, $4)
-                RETURNING id, email, first_name, last_name, user_role, is_verified, created_at
+                RETURNING id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at
             `,
             [input.email, input.passwordHash, input.firstName, input.lastName ?? null]
         );
@@ -112,8 +113,8 @@ export const authRepository = {
     ): Promise<RefreshTokenRow> {
         const { rows } = await db.query<RefreshTokenRow>(
             `
-                SELECT rt.id AS id, rt.userId AS userId, u.user_role AS role
-                FROM refresh_token rt
+                SELECT rt.id AS id, rt.user_id AS "userId", u.user_role AS role
+                FROM refresh_tokens rt
                 JOIN users u ON u.id = rt.user_id
                 WHERE rt.token_hash = $1
                   AND rt.expires_at > NOW() 
@@ -139,5 +140,83 @@ export const authRepository = {
             'DELETE FROM refresh_tokens WHERE user_id = $1',
             [userId]
         );
+    },
+
+    async createOAuthUser(input: { email: string; firstName: string; lastName?: string; avatarUrl: string | null}): Promise<Omit<UserRow, 'password_hash'>> {
+        const { rows } = await db.query<Omit<UserRow, 'password_hash'>>(
+            `INSERT INTO users (email, password_hash, first_name, last_name,
+             avatar_url, is_verified)
+             VALUES ($1, NULL, $2, $3, $4, true)
+             RETURNING id, email, first_name, last_name, avatar_url, user_role, is_verified, created_at`,
+             [input.email, input.firstName, input.lastName ?? null, input.avatarUrl]
+        );
+        return rows[0];
+    },
+    
+    async findByOAuthAccount(provider: string, providerId: string) {
+        const { rows } = await db.query<{ user_id: string }>(
+            `SELECT user_id FROM oauth_accounts WHERE oauth_provider = $1 AND provider_user_id = $2 LIMIT 1`,
+            [provider, providerId]
+        );
+        return rows[0] ?? null;
+    },
+
+    async linkOAuthAccount(userId: string, provider: string, providerId: string): Promise<void> {
+        await db.query(
+            `INSERT INTO oauth_accounts (user_id, oauth_provider, provider_user_id)
+             VALUES ($1, $2, $3)`,
+            [userId, provider, providerId]
+        );
+    },
+
+    async savePasswordResetOtp(userId: string, otpHash: string, expiresAt: Date): Promise<void> {
+        await db.query(
+            `INSERT INTO password_reset_otps (user_id, otp_hash, expires_at)
+             VALUES ($1, $2, $3)`,
+            [userId, otpHash, expiresAt],
+        );
+    },
+
+    async findActiveOtp(userId: string) {
+        const { rows } = await db.query<{ id: string, otp_hash: string, attempts: number }>(
+            `SELECT id, otp_hash, attempts FROM password_reset_otps
+             WHERE user_id = $1 AND used = false AND expires_at > NOW()
+             ORDER BY created_at DESC LIMIT 1`,
+             [userId],
+        );
+        return rows[0] ?? null;
+    },
+
+    async incrementOtpAttempts(otpId: string): Promise<void> {
+        await db.query('UPDATE password_reset_otps SET attempts = attempts + 1 WHERE id = $1', [otpId]);
+    },
+
+    async markOtpVerified(otpId: string): Promise<void> {
+        await db.query(`UPDATE password_reset_otps SET verified = true WHERE id = $1`, [otpId]);
+    },
+
+    async findVerifiedOtp(userId: string) {
+        const { rows } = await db.query<{ id: string }>(
+            `SELECT id FROM password_reset_otps WHERE user_id = $1 AND verified = true AND used = false
+            AND expires_at > NOW() ORDER BY created_at DESC LIMIT 1`,
+            [userId],
+        );
+        return rows[0] ?? null;
+    },
+    
+    async markOtpUsed(otpId: string): Promise<void> {
+        await db.query(`DELETE FROM password_reset_otps WHERE id = $1`, [otpId]);
+    },
+
+    async updatePassword(userId: string, passwordHash: string): Promise<void> {
+        await db.query(`UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2`, [passwordHash, userId]);
+    },
+
+    async countRecentOtps(userId: string, since: Date): Promise<number> {
+        const { rows } = await db.query<{ count: string }>(
+            `SELECT COUNT(*) FROM password_reset_otps WHERE user_id = $1 AND created_at > $2`,
+            [userId, since],
+        );
+        return Number(rows[0].count);
     },
 };

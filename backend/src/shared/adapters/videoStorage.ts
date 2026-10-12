@@ -19,7 +19,7 @@ export const uploadVideo = async (
     fileBuffer: Buffer,
     title: string,
     description = ''
-): Promise<string> => {
+): Promise<{ videoId: string; embedUrl: string }> => {
 
     // Converts the buffer (bytes) into stream (list of chunks)
     const readable = Readable.from(fileBuffer);
@@ -35,5 +35,9 @@ export const uploadVideo = async (
 
     const videoId = response.data.id;
     if (!videoId) throw new Error('Youtube upload failed: no video ID returned');
-    return videoId;
+    
+    return {
+        videoId,
+        embedUrl: `https://www.youtube.com/embed/${videoId}`,
+    };
 }

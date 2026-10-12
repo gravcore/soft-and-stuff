@@ -1,0 +1,37 @@
+.wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+}
+
+.barTrack {
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    overflow: hidden;
+}
+
+.barFill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--accent);
+    transition: width 1s linear, background-color 0.3s ease;
+}
+
+.barFill.urgent {
+    background: var(--danger);
+}
+
+.time {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.8125rem;
+    color: var(--muted);
+    min-width: 44px;
+}
+
+.urgentText {
+    color: var(--danger);
+    font-weight: 600;
+}

@@ -6,7 +6,7 @@ dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 const schema = z.object({
 
     // Only these exact values are allowed
-    NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+    NODE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),
     PORT: z.coerce.number().default(3000), // string -> number
 
     DATABASE_URL: z.url(),
@@ -20,8 +20,11 @@ const schema = z.object({
     JWT_ACCESS_EXPIRES_IN: z.string().default('15m'),
     JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
 
-    STRIPE_SECRET_KEY: z.string(),
-    STRIPE_WEBHOOK_SECRET: z.string(),
+    CSRF_SECRET: z.string().min(32),
+    
+    STRIPE_ENABLED: z.coerce.boolean().default(false),
+    STRIPE_SECRET_KEY: z.string().default(''),
+    STRIPE_WEBHOOK_SECRET: z.string().default(''),
 
     IMAGEKIT_PUBLIC_KEY: z.string(),
     IMAGEKIT_PRIVATE_KEY: z.string(),
@@ -31,6 +34,14 @@ const schema = z.object({
     YOUTUBE_CLIENT_SECRET: z.string(),
     YOUTUBE_REDIRECT_URI: z.url(),
     YOUTUBE_REFRESH_TOKEN: z.string(),
+    
+    FRONTEND_URL: z.url(),
+    
+    GOOGLE_CLIENT_ID: z.string().min(1),
+    GOOGLE_CLIENT_SECRET: z.string().min(1),
+    GOOGLE_REDIRECT_URI: z.string().min(1),
+
+    OTP_TTL_MINUTES: z.coerce.number().default(5),
 
     RESEND_API_KEY: z.string(),
     RESEND_FROM_EMAIL: z.email(),
@@ -41,7 +52,41 @@ const schema = z.object({
     BCRYPT_ROUNDS: z.coerce.number().default(12),
     RATE_LIMIT_WINDOW_MS: z.coerce.number().default(900_000), // 15 minutes
     RATE_LIMIT_MAX: z.coerce.number().default(100),
+
+    BRAND_TITLE: z.string(),
+    BRAND_SUBTITLE: z.string(),
+
+    UNIRATE_API_KEY: z.string(),
+
+    SHIPPO_API_KEY: z.string(),
+
+    WAREHOUSE_ADDRESS_JSON: z.string().transform((val, ctx) => {
+        try {
+            return addressJsonSchema.parse(JSON.parse(val));
+        } catch (err) {
+            ctx.addIssue({
+                code: 'custom',
+                message: `WAREHOUSE_ADDRESS_JSON is not valid: ${err}`
+            });
+            return z.NEVER;
+        }
+    }),
+
+    PAYPAL_CLIENT_ID: z.string().min(1),
+    PAYPAL_CLIENT_SECRET: z.string().min(1),
+    PAYPAL_WEBHOOK_ID: z.string().min(1),
 });
+
+const addressJsonSchema = z.object({
+    name: z.string().min(1),
+    street1: z.string().min(1),
+    city: z.string().min(1),
+    state: z.string().min(1),
+    zip: z.string().min(1),
+    country: z.string().length(2),
+    phone: z.string().min(1),
+    email: z.email(),
+})
 
 // safeParse validates without throwing errors
 const parsed = schema.safeParse(process.env);
