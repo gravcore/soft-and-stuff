@@ -5,7 +5,7 @@ packages:
 allowBuilds:
   '@parcel/watcher': false
   '@scarf/scarf': false
-  '@swc/core': false
+  '@swc/core': true
   esbuild: false
   unrs-resolver: false
 minimumReleaseAgeExclude:
