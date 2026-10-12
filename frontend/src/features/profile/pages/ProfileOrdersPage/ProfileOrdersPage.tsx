@@ -10,7 +10,7 @@ export const ProfileOrdersPage = () => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [page, setpage] = useState(1);
-    const { data, isLoading, isFetching } = useOrders(page);
+    const { data, isLoading } = useOrders(page);
     const canGoBack = (window.history.state?.idx ?? 0) > 0;
 
     return (
