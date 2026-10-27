@@ -5,7 +5,7 @@ import { useCart } from "../../hooks/useCart"
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CartItemList } from "../../components/CartItemList";
-import { PromoCodeInput } from "../../components/PromoCodeInput";
+// import { PromoCodeInput } from "../../components/PromoCodeInput";
 import { CartSummary } from "../../components/CartSummary";
 
 export const CartPage = () => {
@@ -48,7 +48,7 @@ export const CartPage = () => {
                 }}
             />
 
-            <div className="mt-6"><PromoCodeInput /></div>
+            {/* <div className="mt-6"><PromoCodeInput /></div> */}
             <div className="mt-8"><CartSummary subtotal={cart.total} /></div>
         </div>
     );

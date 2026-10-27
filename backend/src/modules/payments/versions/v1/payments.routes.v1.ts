@@ -13,7 +13,7 @@ router.post('/webhooks/paypal', paymentsControllerV1.webhookPaypal);
 router.post('/webhooks/stripe', paymentsControllerV1.webhookStripe);
 
 // route intent with soft authentication to allow logged-in users and guests
-router.post('/:orderId/:method', authenticate(false), attachGuestSession, validateSchema(createIntentSchema), idempotent('POST /payments/:orderId/:method'), paymentsControllerV1.createIntent);
+router.post('/:orderId/:method', authenticate(false), attachGuestSession, validateSchema(createIntentSchema, 'params'), idempotent('POST /payments/:orderId/:method'), paymentsControllerV1.createIntent);
 
 // capture the payment
 router.post('/:orderId/:method/capture', authenticate(false), attachGuestSession, idempotent('POST /payments/:orderId/:method/capture'), paymentsControllerV1.captureIntent);

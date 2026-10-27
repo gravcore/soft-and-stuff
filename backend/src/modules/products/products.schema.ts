@@ -52,7 +52,7 @@ export const createProductSchema = z.object({
 export const updateProductSchema = createProductSchema.partial();
 
 export const productFiltersSchema = z.object({
-    categorySlug: z.string().optional(),
+    category: z.string().optional(),
     featured: z.coerce.boolean().optional(),
     search: z.string().optional(),
     minPrice: z.coerce.number().int().min(0).optional(),
@@ -61,6 +61,8 @@ export const productFiltersSchema = z.object({
         (val) => (typeof val === 'string' ? val.split(',') : val),
         z.array(z.enum(['price_asc', 'price_desc', 'newest', 'popular'])).optional(),
     ),
+    page: z.coerce.number().int().min(1).optional().catch(1),
+    limit: z.coerce.number().int().min(1).max(100).optional().catch(20),
 });
 
 export const createCategorySchema = z.object({
