@@ -33,7 +33,7 @@ export const shippoAdapter: ShippingProvider = {
         .sort((a, b) => a.deliverDays - b.deliverDays);
     },
 
-    async createLabel(address, rate) {
+    async createLabel(_address, rate) {
         if (!rate.providerRateId) { // happens if createLabel is called with a reate that never came from this adapter's own getRates
             throw new AppError('Rate was not quoted by getRates', 400, 'SHIPPO_MISSING_RATE_REFERENCE');
         }
