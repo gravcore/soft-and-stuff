@@ -318,7 +318,20 @@
     "emailPlaceholder": "john@email.com",
     "fullNamePlaceholder": "e.g. John Rivers...",
     "phonePlaceholder": "+502 1234 5678",
-    "addressLine1Placeholder": "Central Park 15th Av. 2nd Street..."
+    "addressLine1Placeholder": "Central Park 15th Av. 2nd Street...",
+    "cardInstructions": "Enter your card details below. All fields are required.",
+    "secureProcessedByPayPal": "Secure payment processed by PayPal",
+    "acceptedCards": "We accept Visa, Mastercard and American Express",
+    "cardPayment": "Pay by card",
+    "cardHolder": "Cardholder",
+    "nameOnCard": "Name on card",
+    "expires": "Expires",
+    "securityCode": "Security code",
+    "secureConnection": "Encrypted connection. Your details are sent securely.",
+    "noCardStored": "We do not store your card details. PayPal processes them directly.",
+    "threeDSecure": "3D Secure verification may be requested by your bank.",
+    "paymentsProcessedBy": "Payments processed by",
+    "pciCompliant": "Our providers comply with PCI DSS security standards."
   },
   "admin": {
     "orders": {

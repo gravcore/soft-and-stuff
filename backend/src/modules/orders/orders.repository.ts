@@ -201,7 +201,7 @@ export const ordersRepository = {
     // Stores the Stripe PaymentIntent ID right after it's created
     async attachPaymenReference(id: string, provider: string, reference: string): Promise<void> {
         await db.query(
-            `UPDATE orders SET payment_provider = $2 payment_reference = $3, updated_at = NOW()
+            `UPDATE orders SET payment_provider = $2, payment_reference = $3, updated_at = NOW()
              WHERE id = $1`,
             [id, provider, reference]
         );

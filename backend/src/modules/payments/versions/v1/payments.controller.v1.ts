@@ -19,7 +19,7 @@ async function assertOwnerShip(req: AuthRequest, order: { user_id: string | null
     
     // Guest users
     } else {
-        if (order.tracking_id !== req.body.tracking_id)
+        if (order.tracking_id !== req.body.trackingId)
             throw new AppError('Order not found', 404, 'ORDER_NOT_FOUND');
     }
 }
