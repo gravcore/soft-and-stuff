@@ -18,12 +18,12 @@ export const cargoExpresoAdapter: ShippingProvider = {
         }];
     },
 
-    async createLabel(address, rate, codAmount) {
-        const reference = [
+    async createLabel(_address, _rate, _codAmount) {
+        /* const reference = [
             address.coordinates && `https://maps.google.com/?q=${address.coordinates.lat},${address.coordinates.lng}`,
             address.coordinates && `https://waze.com/ul?ll=${address.coordinates.lat},${address.coordinates.lng}`,
             address.reference,
-        ].filter(Boolean).join(' | ');
+        ].filter(Boolean).join(' | '); */
 
         return { trackingUrl: '', labelId: '' };
     },
