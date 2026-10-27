@@ -79,7 +79,7 @@ export const ordersService = {
             if (order.tracking_id !== trackingId) throw new AppError('Order not found', 404, 'ORDER_NOT_FOUND');
         }
 
-        if (order.payment_status !== 'pending') {
+        if (order.payment_status != null && order.payment_status !== 'pending') {
             throw new AppError('This order has already been paid and its address can no longer be changed', 409, 'ORDER_NOT_EDITABLE');
         }
 
@@ -190,7 +190,7 @@ export const ordersService = {
             status: order.order_status,
             total: order.total,
             createdAt: order.created_at,
-            items:  items.map((i) => ({ productName: i.product_name, quantity: i.quantity, totalPrice: i.total_price })),
+            items:  items.map((i) => ({ productName: i.product_name, quantity: i.quantity, totalPrice: i.total })),
         };
     },
 

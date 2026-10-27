@@ -51,7 +51,7 @@ export const OrderStatusPage = () => {
             {error && <p className="text-sm text-danger">{error}</p>}
 
             {order && (
-                <div className="rounded-2xl border border-border bg-surface-2/60
+                <div className="rounded-2xl border border-border bg-surface-2/60 p-3
                 backdrop-blur-lg">
 
                     <p className="text-sm text-ink">{t('checkout.orderNumbered', 'Order number:')} <strong>{order.orderNumber}</strong></p>

@@ -16,7 +16,7 @@ const shippingAddressSchema = z.object({
 });
 
 export const updateShippingAddressSchema = z.object({
-    shippingAddressSchema: shippingAddressSchema,
+    shippingAddress: shippingAddressSchema,
     trackingId: z.string()
                  .length(12)
                  .regex(/^ORD-[A-Z0-9]{8}$/, schemaError('INVALID_TRACKING_ID', 'Invalid tracking ID format'))

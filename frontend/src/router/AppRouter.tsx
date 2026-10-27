@@ -35,6 +35,7 @@ const router = createBrowserRouter([
         children: [
             { path: '/', element: wrap(Home) },
             { path: '/products', element: wrap(ProductListPage) },
+            { path: '/categories', element: wrap(ProductListPage) },
             { path: '/products/:slug', element: wrap(ProductDetailPage) },
             { path: '/cart', element: wrap(CartPage) },
             { path: '/settings', element: wrap(SettingsPage) },
