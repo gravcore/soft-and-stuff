@@ -14,18 +14,22 @@ export function OtpTimer({ expiresAt, totalSeconds, onExpire }: OtpTimerProps) {
 
     useEffect(() => {
         if (!expiresAt) return;
+        let interval: ReturnType<typeof setInterval> | null = null;
+
         const tick = () => {
             const left = Math.max(0, Math.round((expiresAt - Date.now()) / 1000));
             setSecondsLeft(left);
             if (left === 0) {
                 onExpire();
-                clearInterval(interval); // stop ticking once expired
+                if (interval) clearInterval(interval); // stop ticking once expired
             }
         };
         tick();
 
-        const interval = setInterval(tick, 1000);
-        return () => clearInterval(interval);
+        interval = setInterval(tick, 1000);
+        return () => {
+            if (interval) clearInterval(interval);
+        }
     }, [expiresAt, onExpire]);
 
     const minutes = Math.floor(secondsLeft / 60);

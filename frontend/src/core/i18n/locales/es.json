@@ -97,7 +97,8 @@
     "profile": "Perfil",
     "theme": "Tema",
     "login": "Acceso",
-    "search": "Buscar"
+    "search": "Buscar",
+    "settings": "Configuración"
   },
   "common": {
     "back": "Atrás",
