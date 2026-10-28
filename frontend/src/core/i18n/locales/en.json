@@ -97,7 +97,8 @@
     "cart": "Cart",
     "profile": "Profile",
     "login": "Login",
-    "theme": "Theme"
+    "theme": "Theme",
+    "settings": "Settings"
   },
   "profile": {
     "title": "Profile",
